@@ -155,11 +155,20 @@ MainRightGroup:AddButton({
 -- COMBAT TAB
 local CombatLeftGroup = Tabs.Combat:AddLeftGroupbox("Kill Aura")
 local CombatRightGroup = Tabs.Combat:AddRightGroupbox("Auto Heal")
+local CombatLeftGroupVoodo = Tabs.Combat:AddLeftGroupbox("Voodo")
+
+CombatLeftGroupVoodo:AddToggle("VoodoAimBot", {
+    Text = "VoodoAimBot",
+    Default = false,
+})
 
 CombatLeftGroup:AddToggle("killauratoggle", {
     Text = "Kill Aura",
     Default = false,
 })
+
+
+
 
 CombatLeftGroup:AddSlider("killaurarange", {
     Text = "Range",
@@ -675,6 +684,37 @@ task.spawn(function()
     end
 end)
 
+task.spawn(function()
+while true do
+    if not Toggles.VoodoAimBot.Value  then
+        task.wait(0.1)
+        continue
+    end
+
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player ~= plr then
+            local playerfolder = workspace.Players:FindFirstChild(player.Name)
+            if playerfolder then
+                local rootpart = playerfolder:FindFirstChild("HumanoidRootPart")
+                local entityid = playerfolder:GetAttribute("EntityID")
+
+                if rootpart and entityid then
+                    local dist = (rootpart.Position - root.Position).Magnitude
+                    if dist <= range then
+
+                        local oldsend = hookfunction(packets.send, function()
+                            return oldsend(rootpart.CFrame)
+                        end)
+
+                    end
+                end
+            end
+        end
+    end
+
+end
+end)
+
 -- Resource Aura
 task.spawn(function()
     while true do
@@ -979,6 +1019,8 @@ local function tweenpbs(range, fruitname)
         task.wait(0.1)
     end
 end
+
+task.
 
 -- Auto Plant
 task.spawn(function()
