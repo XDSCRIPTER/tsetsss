@@ -718,9 +718,9 @@ end
 local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
     if Toggles.VoodoAimBot.Value  then
        
-        print(..., "NewCFRAME:".. findNearestPlayerWithFolder(plr).Character:FindFirstChild("HumanoidRootPart").CFrame)
+        print(..., "NewCFRAME:".. findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").CFrame)
         
-        return oldsend(findNearestPlayerWithFolder(plr).Character:FindFirstChild("HumanoidRootPart").CFrame)
+        return oldsend(findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").CFrame)
     end
 end)
                
