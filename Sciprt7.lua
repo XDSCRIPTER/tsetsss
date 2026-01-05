@@ -622,11 +622,11 @@ local function getlayout(itemname)
 end
 
 
-local function campfire(CampFireId)
-    if packets.InteractStructure.send then
-       packets.InteractStructure.send(CampFireId, Item_Ids[Options.katargetcountdropdown.Value]}
-   end
-end)
+local function campfire(campFireId, itemId)
+    if packets.InteractStructure and packets.InteractStructure.send then
+        packets.InteractStructure.send({ entityID = campFireId, itemID = itemId })
+    end
+end
 
 local function swingtool(tspmogngicl)
     if packets.SwingTool and packets.SwingTool.send then
@@ -838,7 +838,6 @@ task.spawn(function()
         for _, r in pairs(workspace.Deployables:GetChildren()) do
             table.insert(AllDeployables, r)
         end
-       
 
         for _, res in pairs(AllDeployables) do
             if res:IsA("Model") and res:GetAttribute("EntityID") and res.Name == "Campfire" then
@@ -863,7 +862,14 @@ task.spawn(function()
                 table.insert(selectedTargets, targets[i].eid)
             end
 
-            campfire(selectedTargets)
+            -- Получаем ID выбранного топлива
+            local itemName = Options.CampFire_Fule.Value
+            local itemId = Item_Ids[itemName] -- Предполагаем, что в Item_Ids есть такие ключи
+
+            -- Для каждого выбранного campfire отправляем взаимодействие
+            for _, campFireId in ipairs(selectedTargets) do
+                campfire(campFireId, itemId)
+            end
         end
 
         task.wait(cooldown)
