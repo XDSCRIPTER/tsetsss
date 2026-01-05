@@ -30,6 +30,7 @@ local Tabs = {
 -- Инициализация сервисов и переменных
 local rs = game:GetService("ReplicatedStorage")
 local packets = require(rs.Modules.Packets)
+local Item_Ids = require(game:GetService("ReplicatedStorage").Modules.ItemIDS)
 local plr = game.Players.LocalPlayer
 local char = plr.Character or plr.CharacterAdded:Wait()
 local root = char:WaitForChild("HumanoidRootPart")
@@ -48,7 +49,7 @@ local itemslist = {
 
 -- MAIN TAB
 local MainLeftGroup = Tabs.Main:AddLeftGroupbox("Character")
-local MainRightGroup = Tabs.Main:AddRightGroupbox("Utilities")
+local MainRightGroup = Tabs.Main:AddRightGroupbox("Interactions")
 
 MainLeftGroup:AddToggle("wstoggle", {
     Text = "Walkspeed",
@@ -128,29 +129,25 @@ MainLeftGroup:AddToggle("msatoggle", {
     end,
 })
 
-MainRightGroup:AddButton({
-    Text = "Copy Job ID",
-    Func = function()
-        setclipboard(game.JobId)
+MainRightGroup:AddToggle("CampFires_Interact", {
+    Text = "Interact Campfire",
+    Default = false,
+    Tooltip = "Prevents slipping on mountains",
+    Callback = function(Value)
+        updmsa()
     end,
-    DoubleClick = false,
 })
 
-MainRightGroup:AddButton({
-    Text = "Copy HWID",
-    Func = function()
-        setclipboard(rbxservice:GetClientId())
-    end,
-    DoubleClick = false,
+MainRightGroup:AddDropdown("CampFire_Fule", {
+    Text = "Fuel for campfire",
+    Values = {"Log", "Leaves", "Coal"},
+    Default = "1",
+    Multi = false,
 })
 
-MainRightGroup:AddButton({
-    Text = "Copy SID",
-    Func = function()
-        setclipboard(rbxservice:GetSessionId())
-    end,
-    DoubleClick = false,
-})
+
+
+
 
 -- COMBAT TAB
 local CombatLeftGroup = Tabs.Combat:AddLeftGroupbox("Kill Aura")
@@ -600,6 +597,13 @@ local function getlayout(itemname)
     return nil
 end
 
+
+local function campfire(CampFireId)
+    if packets.InteractStructure.send then
+       packets.InteractStructure.send({CampFireId, Item_Ids[Options.katargetcountdropdown.Value]})
+   end
+end)
+
 local function swingtool(tspmogngicl)
     if packets.SwingTool and packets.SwingTool.send then
         packets.SwingTool.send(tspmogngicl)
@@ -731,6 +735,9 @@ local function findNearestPlayerSimple(plr)
     return nearestPlayer
 end
 
+
+
+
 task.spawn(function()
     local lastCharacter = nil  -- Храним последний подсвеченный персонаж
     
@@ -787,7 +794,55 @@ end
 end);
 
 
+-- Campfire Aura
 
+task.spawn(function()
+    while true do
+        if not Toggles.CampFires_Interact.Value then
+            task.wait(0.1)
+            continue
+        end
+
+        local range = tonumber(Options.resourceaurarange.Value) or 20
+        local targetCount = tonumber(Options.resourcetargetdropdown.Value) or 1
+        local cooldown = tonumber(Options.resourcecooldownslider.Value) or 0.1
+        local targets = {}
+        local AllDeployables = {}
+
+        for _, r in pairs(workspace.Deployables:GetChildren()) do
+            table.insert(AllDeployables, r)
+        end
+       
+
+        for _, res in pairs(AllDeployables) do
+            if res:IsA("Model") and res:GetAttribute("EntityID") and res.Name == "Campfire" then
+                local eid = res:GetAttribute("EntityID")
+                local ppart = res.PrimaryPart or res:FindFirstChildWhichIsA("BasePart")
+                if ppart then
+                    local dist = (ppart.Position - root.Position).Magnitude
+                    if dist <= range then
+                        table.insert(targets, { eid = eid, dist = dist })
+                    end
+                end
+            end
+        end
+
+        if #targets > 0 then
+            table.sort(targets, function(a, b)
+                return a.dist < b.dist
+            end)
+
+            local selectedTargets = {}
+            for i = 1, math.min(targetCount, #targets) do
+                table.insert(selectedTargets, targets[i].eid)
+            end
+
+            campfire(selectedTargets)
+        end
+
+        task.wait(cooldown)
+    end
+end)
                
 
 -- Resource Aura
