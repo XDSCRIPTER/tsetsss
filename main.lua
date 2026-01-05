@@ -718,8 +718,13 @@ end
 local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
     if Toggles.VoodoAimBot.Value  then
        
-        print(..., "NewCFRAME:".. findNearestPlayerSimple(plr))
-        
+        local nearest = findNearestPlayerSimple(plr) or nil
+
+        if nearest ~= nil then
+        print(..., "xd".. findNearestPlayerSimple(plr))
+    
+        end
+
         return oldsend(findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").CFrame)
     end
 end)
@@ -1204,6 +1209,7 @@ end)
 -- Настройка ThemeManager и SaveManager
 ThemeManager:SetLibrary(Library)
 ThemeManager:SetFolder("PrivateWeedHub")
+ThemeManager:ApplyToTab(Tabs["UI Settings"])
 
 SaveManager:SetLibrary(Library)
 SaveManager:SetFolder("PrivateWeedHub")
