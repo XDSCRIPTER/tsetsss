@@ -379,11 +379,11 @@ local wscon, hhcon
 local function updws()
     if wscon then wscon:Disconnect() end
 
-    if Options.wstoggle.Value or Options.jptoggle.Value then
+    if Toggles.wstoggle.Value or Toggles.jptoggle.Value then
         wscon = runs.RenderStepped:Connect(function()
             if hum then
-                hum.WalkSpeed = Options.wstoggle.Value and Options.wsslider.Value or 16
-                hum.JumpPower = Options.jptoggle.Value and Options.jpslider.Value or 50
+                hum.WalkSpeed = Toggles.wstoggle.Value and Options.wsslider.Value or 16
+                hum.JumpPower = Toggles.jptoggle.Value and Options.jpslider.Value or 50
             end
         end)
     end
@@ -392,10 +392,10 @@ end
 local function updhh()
     if hhcon then hhcon:Disconnect() end
 
-    if Options.hheighttoggle.Value then
+    if Toggles.hheighttoggle.Value then
         hhcon = runs.RenderStepped:Connect(function()
             if hum then
-                hum.HipHeight = Options.hheighttoggle.Value and Options.hheightslider.Value or 2
+                hum.HipHeight = Toggles.hheighttoggle.Value and Options.hheightslider.Value or 2
             end
         end)
     end
@@ -428,3 +428,27 @@ end)
 -- Применяем сохранённые настройки
 ThemeManager:Load()
 SaveManager:Load()
+
+--[[
+    КРИТИЧЕСКИ ВАЖНО:
+    В вашем исходном коде (который вы не полностью предоставили) были функции,
+    которые использовали элементы интерфейса. Теперь все тогглы нужно получать через Toggles, а не Options.
+    
+    Пример исправления для авто-дропа (если у вас был такой код):
+    
+    БЫЛО (в Fluent):
+    if Options.droptoggle.Value then
+        -- код дропа
+    end
+    
+    СТАЛО (в ObsidianUI):
+    if Toggles.droptoggle.Value then
+        -- код дропа
+    end
+    
+    Для дропдаунов, слайдеров и других элементов используйте Options как и раньше:
+    local item = Options.dropdropdown.Value
+    local range = Options.pickuprange.Value
+    
+    Проверьте весь свой функциональный код и замените обращения к тогглам!
+]]
