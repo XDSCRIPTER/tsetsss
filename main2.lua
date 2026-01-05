@@ -718,16 +718,13 @@ end
 local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
     if Toggles.VoodoAimBot.Value  then
        
-        local nearest = findNearestPlayerSimple(plr)  or "XD"
+        local nearest = findNearestPlayerSimple(plr)  
         
         args = ...
 
         print(args, typeof(args))
-        print(nearest or "XD")
-        if nearest ~= nil then
-        print("xd".. findNearestPlayerSimple(plr))
+        print(nearest.Character:FindFirstChild("HumanoidRootPart").Position or "XD")
     
-        end
 
         return oldsend(findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").Position)
     end
