@@ -163,13 +163,12 @@ MainRightGroup:AddSlider("Range_CampFire", {
     Suffix = "studs",
 })
 
-MainRightGroup:AddSlider("Tareget_count_camfires", {
-    Text = "Targets",
-    Default = 2,
-    Min = 1,
-    Max = 10,
-    Rounding = 10,
-    Suffix = "CampFires",
+
+MainRightGroup:AddDropdown("Tareget_count_camfires", {
+    Text = "Max Targets",
+    Values = {"1", "2", "3", "4", "5", "6"},
+    Default = "1",
+    Multi = false,
 })
 
 
