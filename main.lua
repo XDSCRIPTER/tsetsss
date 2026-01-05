@@ -374,6 +374,12 @@ ExtraRightGroup:AddSlider("itemheight", {
 
 --{Конец интерфейса, логика работы}
 
+-- КРИТИЧЕСКИ ВАЖНО: Дублируем тогглы в Options для совместимости с вашим функциональным кодом
+-- Это нужно, потому что ваш исходный код, вероятно, использует Options для доступа к тогглам
+for toggleName, toggleObj in pairs(Toggles) do
+    Options[toggleName] = toggleObj
+end
+
 local wscon, hhcon
 
 local function updws()
@@ -430,25 +436,18 @@ ThemeManager:Load()
 SaveManager:Load()
 
 --[[
-    КРИТИЧЕСКИ ВАЖНО:
-    В вашем исходном коде (который вы не полностью предоставили) были функции,
-    которые использовали элементы интерфейса. Теперь все тогглы нужно получать через Toggles, а не Options.
+    КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ:
+    В ObsidianUI тогглы находятся в таблице Toggles, а не Options.
+    Но ваш исходный функциональный код, вероятно, использует Options для доступа к тогглам.
     
-    Пример исправления для авто-дропа (если у вас был такой код):
+    Я добавил строку:
+        for toggleName, toggleObj in pairs(Toggles) do
+            Options[toggleName] = toggleObj
+        end
     
-    БЫЛО (в Fluent):
-    if Options.droptoggle.Value then
-        -- код дропа
-    end
+    Теперь все тогглы дублируются в Options, и ваш код Resource Aura должен работать,
+    если он использует Options.resourceauratoggle.Value.
     
-    СТАЛО (в ObsidianUI):
-    if Toggles.droptoggle.Value then
-        -- код дропа
-    end
-    
-    Для дропдаунов, слайдеров и других элементов используйте Options как и раньше:
-    local item = Options.dropdropdown.Value
-    local range = Options.pickuprange.Value
-    
-    Проверьте весь свой функциональный код и замените обращения к тогглам!
+    Если ваш код Resource Aura использует другую логику, пожалуйста, предоставьте его,
+    и я смогу точнее исправить проблему.
 ]]
