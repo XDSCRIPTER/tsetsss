@@ -721,6 +721,8 @@ hookfunction(packets.VoodooSpell.send, function(...)
 
         print(args, typeof(args))
         local pos = findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").Position
+       
+        print("CharacterPos:".. pos)
 
         return pos;
     end
