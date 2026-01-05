@@ -718,7 +718,7 @@ end
 local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
     if Toggles.VoodoAimBot.Value  then
        
-        local nearest = findNearestPlayerSimple(plr) 
+        local nearest = findNearestPlayerSimple(plr)  or "XD"
 
         print(...)
         print(nearest or "XD")
