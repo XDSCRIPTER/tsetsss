@@ -719,7 +719,8 @@ local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
     if Toggles.VoodoAimBot.Value  then
        
         print(...)
-        return oldsend( findNearestPlayerWithFolder(plr).Character:FindFirstChild("HumanoidRootPart"))
+
+        return oldsend(findNearestPlayerWithFolder(plr).Character:FindFirstChild("HumanoidRootPart"))
     end
 end)
                
@@ -1029,7 +1030,7 @@ local function tweenpbs(range, fruitname)
     end
 end
 
-task.
+
 
 -- Auto Plant
 task.spawn(function()
