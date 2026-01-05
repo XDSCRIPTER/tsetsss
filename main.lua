@@ -721,7 +721,7 @@ local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
         local nearest = findNearestPlayerSimple(plr) or nil
 
         print(...)
-
+        print(nearest or nil)
         if nearest ~= nil then
         print("xd".. findNearestPlayerSimple(plr))
     
