@@ -715,40 +715,20 @@ local function findNearestPlayerSimple(plr)
     return nearestPlayer
 end
 
--- Сохраняем оригинальную функцию
-local originalSend = packets.VoodooSpell.send
-
-hookfunction(packets.VoodooSpell.send, function(...)
-    if Toggles.VoodoAimBot.Value then
-        local args = {...}
-        local localPlayer = game.Players.LocalPlayer  -- Получаем локального игрока
-        
-        -- Находим ближайшего игрока
-        local nearestPlayer = findNearestPlayerSimple(localPlayer)
-        
-        if nearestPlayer and nearestPlayer.Character then
-            local humanoidRootPart = nearestPlayer.Character:FindFirstChild("HumanoidRootPart")
-            if humanoidRootPart then
-                local pos = humanoidRootPart.Position
-                
-                -- В зависимости от структуры args, нужно изменить соответствующий аргумент
-                -- Предположим, что args[1] - это таблица параметров заклинания
-                if args[1] and typeof(args[1]) == "table" then
-                    args[1].Position = pos  -- Или другое поле, в зависимости от API
-                else
-                    -- Если args не таблица, возможно позиция передается как отдельный аргумент
-                    args = {pos}  -- Или другой индекс, в зависимости от сигнатуры функции
-                end
-                
-                -- Вызываем оригинальную функцию с измененными аргументами
-                return originalSend(unpack(args))
-            end
-        end
-    end
+local oldsend; oldsend = hookfunction(packets.VoodooSpell.send, function(...)
+if Toggles.VoodoAimBot.Value then
+   args = ...
+   
+     
+    print("argsoldmethod", args)
     
-    -- Если аимбот выключен или не удалось найти игрока, вызываем оригинальную функцию с исходными аргументами
-    return originalSend(...)
-end)
+
+    return oldsend(findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").Position)
+end
+end);
+
+
+
                
 
 -- Resource Aura
