@@ -141,11 +141,11 @@ MainRightGroup:AddToggle("CampFires_Interact", {
 MainRightGroup:AddDropdown("CampFire_Fule", {
     Text = "Fuel for campfire",
     Values = {"Log", "Leaves", "Coal"},
-    Default = "1",
+    Default = "Leaves",
     Multi = false,
 })
 
-MainLeftGroup:AddSlider("Deploy_Time_CampFires", {
+MainRightGroup:AddSlider("Deploy_Time_CampFires", {
     Text = "time to deploy fuel",
     Default = 2,
     Min = 0.1,
@@ -154,7 +154,7 @@ MainLeftGroup:AddSlider("Deploy_Time_CampFires", {
     Suffix = "CampFire",
 })
 
-MainLeftGroup:AddSlider("Range_CampFire", {
+MainRightGroup:AddSlider("Range_CampFire", {
     Text = "Range",
     Default = 2,
     Min = 1,
@@ -163,7 +163,7 @@ MainLeftGroup:AddSlider("Range_CampFire", {
     Suffix = "CampFire",
 })
 
-MainLeftGroup:AddSlider("Tareget_count_camfires", {
+MainRightGroup:AddSlider("Tareget_count_camfires", {
     Text = "Targets",
     Default = 2,
     Min = 1,
