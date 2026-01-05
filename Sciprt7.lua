@@ -132,7 +132,7 @@ MainLeftGroup:AddToggle("msatoggle", {
 MainRightGroup:AddToggle("CampFires_Interact", {
     Text = "Interact Campfire",
     Default = false,
-    Tooltip = "Prevents slipping on mountains",
+    Tooltip = "CampFires_Interact",
     Callback = function(Value)
         updmsa()
     end,
@@ -145,8 +145,32 @@ MainRightGroup:AddDropdown("CampFire_Fule", {
     Multi = false,
 })
 
+MainLeftGroup:AddSlider("Deploy_Time_CampFires", {
+    Text = "time to deploy fuel",
+    Default = 2,
+    Min = 0.1,
+    Max = 60,
+    Rounding = 1,
+    Suffix = "CampFire",
+})
 
+MainLeftGroup:AddSlider("Range_CampFire", {
+    Text = "Range",
+    Default = 2,
+    Min = 1,
+    Max = 200,
+    Rounding = 1,
+    Suffix = "CampFire",
+})
 
+MainLeftGroup:AddSlider("Tareget_count_camfires", {
+    Text = "Targets",
+    Default = 2,
+    Min = 1,
+    Max = 10,
+    Rounding = 1,
+    Suffix = "CampFire",
+})
 
 
 -- COMBAT TAB
@@ -600,9 +624,9 @@ end
 
 local function campfire(CampFireId)
     if packets.InteractStructure.send then
-       packets.InteractStructure.send({CampFireId, Item_Ids[Options.katargetcountdropdown.Value]})
+       packets.InteractStructure.send(CampFireId, Item_Ids[Options.katargetcountdropdown.Value]}
    end
-end
+end)
 
 local function swingtool(tspmogngicl)
     if packets.SwingTool and packets.SwingTool.send then
@@ -794,6 +818,8 @@ end
 end);
 
 
+
+
 -- Campfire Aura
 
 task.spawn(function()
@@ -803,9 +829,9 @@ task.spawn(function()
             continue
         end
 
-        local range = tonumber(Options.resourceaurarange.Value) or 20
-        local targetCount = tonumber(Options.resourcetargetdropdown.Value) or 1
-        local cooldown = tonumber(Options.resourcecooldownslider.Value) or 0.1
+        local range = tonumber(Options.Range_CampFire.Value) or 20
+        local targetCount = tonumber(Options.Tareget_count_camfires.Value) or 1
+        local cooldown = tonumber(Options.Deploy_Time_CampFires.Value) or 0.1
         local targets = {}
         local AllDeployables = {}
 
@@ -877,7 +903,7 @@ task.spawn(function()
                     if dist <= range then
                         table.insert(targets, { eid = eid, dist = dist })
                     end
-                end
+                end     
             end
         end
 
