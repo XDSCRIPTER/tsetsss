@@ -715,7 +715,7 @@ local function findNearestPlayerSimple(plr)
     return nearestPlayer
 end
 
-local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
+hookfunction(packets.VoodooSpell.send, function(...)
     if Toggles.VoodoAimBot.Value  then
        
         local nearest = findNearestPlayerSimple(plr)  
@@ -726,7 +726,7 @@ local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
         local pos = nearest.Character:FindFirstChild("HumanoidRootPart").Position 
     
 
-        return oldsend(pos)
+        return pos;
     end
 end)
                
