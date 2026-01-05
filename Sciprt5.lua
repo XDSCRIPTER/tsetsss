@@ -162,6 +162,11 @@ CombatLeftGroupVoodo:AddToggle("VoodoAimBot", {
     Default = false,
 })
 
+CombatLeftGroupVoodo:AddToggle("VoodooShowTarget", {
+    Text = "Show Target",
+    Default = false,
+})
+
 CombatLeftGroup:AddToggle("killauratoggle", {
     Text = "Kill Aura",
     Default = false,
@@ -175,6 +180,15 @@ CombatLeftGroup:AddSlider("killaurarange", {
     Default = 5,
     Min = 1,
     Max = 9,
+    Rounding = 1,
+    Suffix = " studs",
+})
+
+CombatLeftGroupVoodo:AddSlider("VoodooAimbotRangeDetect", {
+    Text = "Voodoo Aimbot Range Detect",
+    Default = 30,
+    Min = 1,
+    Max = 1000,
     Rounding = 1,
     Suffix = " studs",
 })
@@ -693,7 +707,7 @@ local function findNearestPlayerSimple(plr)
     if not rootPart then return nil end
     
     local nearestPlayer = nil
-    local shortestDistance = math.huge
+    local shortestDistance = tonumber(Options.VoodooAimbotRangeDetect.Value) or 20
     
     for _, otherPlayer in pairs(game.Players:GetPlayers()) do
         if otherPlayer ~= plr then
@@ -701,6 +715,8 @@ local function findNearestPlayerSimple(plr)
             if otherChar then
                 local otherRoot = otherChar:FindFirstChild("HumanoidRootPart")
                 if otherRoot then
+                    
+
                     local distance = (otherRoot.Position - rootPart.Position).Magnitude
                     
                     if distance < shortestDistance then
@@ -714,6 +730,47 @@ local function findNearestPlayerSimple(plr)
     
     return nearestPlayer
 end
+
+task.spawn(function()
+    local lastCharacter = nil  -- Храним последний подсвеченный персонаж
+    
+    while true do
+        if not Toggles.VoodooShowTarget.Value then
+            -- Если выключено, удаляем подсветку с последнего персонажа
+            if lastCharacter then
+                local oldHighlight = lastCharacter:FindFirstChild("Highlight")
+                if oldHighlight then
+                    oldHighlight:Destroy()
+                end
+                lastCharacter = nil
+            end
+            
+            task.wait(0.1)
+            continue
+        end
+
+        local target = findNearestPlayerSimple(plr)
+        local char = target and target.Character or nil
+
+        -- Удаляем подсветку с предыдущего персонажа, если цель изменилась
+        if lastCharacter and lastCharacter ~= char then
+            local oldHighlight = lastCharacter:FindFirstChild("Highlight")
+            if oldHighlight then
+                oldHighlight:Destroy()
+            end
+        end
+
+        if char and not char:FindFirstChild("Highlight") then
+            local high = Instance.new("Highlight")
+            high.Parent = char
+        end
+
+        -- Обновляем запись о последнем подсвеченном персонаже
+        lastCharacter = char
+        
+        task.wait(0.1)  -- Не забудьте добавить задержку, чтобы не грузить процессор
+    end
+end)
 
 local oldsend; oldsend = hookfunction(packets.VoodooSpell.send, function(...)
 if Toggles.VoodoAimBot.Value then
@@ -786,20 +843,22 @@ end)
 
 -- Auto Heal
 task.spawn(function()
-   while true do 
-      if not Toggles.AutoHealToggle.Value then
-          task.wait(0.1)
-          continue
-      end
-    print(Options.HealPercent.Value)
-    if plr.Character:FindFirstChild("Humanoid").Health > 0 and not plr.Character:FindFirstChild("Humanoid").Health >= Options.HealPercent.Value then
-       Eating(Options.HealFruitDropDown.Value)
+    while true do 
+       if not Toggles.AutoHealToggle.Value then
+           task.wait(0.1)
+           continue
+       end
+     
+     print(Options.HealPercent.Value)
+     
+     local humanoid = plr.Character:FindFirstChild("Humanoid")
+     if humanoid and humanoid.Health > 0 and humanoid.Health <= Options.HealPercent.Value then
+        Eating(Options.HealFruitDropDown.Value)
+     end
+ 
+     task.wait(Options.HealColdown.Value)
     end
-
-    task.wait(Options.HealColdown.Value)
-
-   end
-end)
+ end)
 
 -- Critter Aura
 task.spawn(function()
