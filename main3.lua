@@ -723,10 +723,10 @@ local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
         args = ...
 
         print(args, typeof(args))
-        print(nearest.Character:FindFirstChild("HumanoidRootPart").Position or "XD")
+        local pos = nearest.Character:FindFirstChild("HumanoidRootPart").Position 
     
 
-        return oldsend(findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").Position)
+        return oldsend(pos)
     end
 end)
                
