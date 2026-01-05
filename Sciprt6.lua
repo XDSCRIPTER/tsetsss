@@ -602,7 +602,7 @@ local function campfire(CampFireId)
     if packets.InteractStructure.send then
        packets.InteractStructure.send({CampFireId, Item_Ids[Options.katargetcountdropdown.Value]})
    end
-end)
+end
 
 local function swingtool(tspmogngicl)
     if packets.SwingTool and packets.SwingTool.send then
