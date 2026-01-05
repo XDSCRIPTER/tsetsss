@@ -684,39 +684,45 @@ task.spawn(function()
     end
 end)
 
-task.spawn(function()
-while true do
-    if not Toggles.VoodoAimBot.Value  then
-        task.wait(0.1)
-        continue
-    end
+
+local function findNearestPlayerSimple(plr)
+    local character = plr.Character
+    if not character then return nil end
     
-    range = 30
-
-    for _, player in pairs(game.Players:GetPlayers()) do
-        if player ~= plr then
-            local playerfolder = workspace.Players:FindFirstChild(player.Name)
-            if playerfolder then
-                local rootpart = playerfolder:FindFirstChild("HumanoidRootPart")
-                local entityid = playerfolder:GetAttribute("EntityID")
-
-                if rootpart and entityid then
-                    local dist = (rootpart.Position - root.Position).Magnitude
-                    if dist <= range then
-                        local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
-                            print(...)
-
-                            return oldsend(rootpart.CFrame)
-                        end)
-
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    if not rootPart then return nil end
+    
+    local nearestPlayer = nil
+    local shortestDistance = math.huge
+    
+    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= plr then
+            local otherChar = otherPlayer.Character
+            if otherChar then
+                local otherRoot = otherChar:FindFirstChild("HumanoidRootPart")
+                if otherRoot then
+                    local distance = (otherRoot.Position - rootPart.Position).Magnitude
+                    
+                    if distance < shortestDistance then
+                        shortestDistance = distance
+                        nearestPlayer = otherPlayer
                     end
                 end
             end
         end
     end
-
+    
+    return nearestPlayer
 end
+
+local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
+    if Toggles.VoodoAimBot.Value  then
+       
+        print(...)
+        return oldsend( findNearestPlayerWithFolder(plr).Character:FindFirstChild("HumanoidRootPart"))
+    end
 end)
+               
 
 -- Resource Aura
 task.spawn(function()
