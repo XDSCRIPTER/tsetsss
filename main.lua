@@ -703,7 +703,7 @@ while true do
                 if rootpart and entityid then
                     local dist = (rootpart.Position - root.Position).Magnitude
                     if dist <= range then
-                        local oldsend = hookfunction(packets.send, function(...)
+                        local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
                             print(...)
 
                             return oldsend(rootpart.CFrame)
