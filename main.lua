@@ -1204,7 +1204,6 @@ end)
 -- Настройка ThemeManager и SaveManager
 ThemeManager:SetLibrary(Library)
 ThemeManager:SetFolder("PrivateWeedHub")
-ThemeManager:ApplyToTab(Tabs["UI Settings"])
 
 SaveManager:SetLibrary(Library)
 SaveManager:SetFolder("PrivateWeedHub")
