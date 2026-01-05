@@ -717,14 +717,10 @@ end
 
 hookfunction(packets.VoodooSpell.send, function(...)
     if Toggles.VoodoAimBot.Value  then
-       
-        local nearest = findNearestPlayerSimple(plr)  
-        
         args = ...
 
         print(args, typeof(args))
-        local pos = nearest.Character:FindFirstChild("HumanoidRootPart").Position 
-    
+        local pos = findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").Position
 
         return pos;
     end
