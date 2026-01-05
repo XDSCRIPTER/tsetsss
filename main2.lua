@@ -729,7 +729,7 @@ local oldsend = hookfunction(packets.VoodooSpell.send, function(...)
     
         end
 
-        return oldsend(findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").CFrame)
+        return oldsend(findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").Position)
     end
 end)
                
