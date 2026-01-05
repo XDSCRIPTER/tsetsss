@@ -151,7 +151,7 @@ MainRightGroup:AddSlider("Deploy_Time_CampFires", {
     Min = 0.1,
     Max = 60,
     Rounding = 1,
-    Suffix = "CampFire",
+    Suffix = "s",
 })
 
 MainRightGroup:AddSlider("Range_CampFire", {
@@ -160,7 +160,7 @@ MainRightGroup:AddSlider("Range_CampFire", {
     Min = 1,
     Max = 200,
     Rounding = 1,
-    Suffix = "CampFire",
+    Suffix = "studs",
 })
 
 MainRightGroup:AddSlider("Tareget_count_camfires", {
@@ -168,8 +168,8 @@ MainRightGroup:AddSlider("Tareget_count_camfires", {
     Default = 2,
     Min = 1,
     Max = 10,
-    Rounding = 1,
-    Suffix = "CampFire",
+    Rounding = 10,
+    Suffix = "CampFires",
 })
 
 
