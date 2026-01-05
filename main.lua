@@ -1,10 +1,7 @@
-
 local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
-
---loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/XDSCRIPTER/script/refs/heads/main/main3.lua"))()
 
 local Options = Library.Options
 local Toggles = Library.Toggles
@@ -21,15 +18,16 @@ local Window = Library:CreateWindow({
 })
 
 local Tabs = {
-    Main = Window:AddTab("Main", "user"),
+    Main = Window:AddTab("Main", "menu"),
     Combat = Window:AddTab("Combat", "axe"),
     Map = Window:AddTab("Map", "trees"),
     Pickup = Window:AddTab("Pickup", "backpack"),
     Farming = Window:AddTab("Farming", "sprout"),
     Extra = Window:AddTab("Extra", "plus"),
-    ["UI Settings"] = Window:AddTab("UI Settings", "settings"),
+    Settings = Window:AddTab("UI Settings", "settings"),
 }
 
+-- Инициализация сервисов и переменных
 local rs = game:GetService("ReplicatedStorage")
 local packets = require(rs.Modules.Packets)
 local plr = game.Players.LocalPlayer
@@ -48,7 +46,7 @@ local itemslist = {
     "Adurite", "Berry", "Bloodfruit", "Bluefruit", "Coin", "Essence", "Hide", "Ice Cube", "Iron", "Jelly", "Leaves", "Log", "Steel", "Stone", "Wood", "Gold", "Raw Gold", "Crystal Chunk", "Raw Emerald", "Pink Diamond", "Raw Adurite", "Raw Iron", "Coal"
 }
 
--- Main Tab
+-- MAIN TAB
 local MainLeftGroup = Tabs.Main:AddLeftGroupbox("Character")
 local MainRightGroup = Tabs.Main:AddRightGroupbox("Utilities")
 
@@ -62,7 +60,7 @@ MainLeftGroup:AddToggle("wstoggle", {
 })
 
 MainLeftGroup:AddSlider("wsslider", {
-    Text = "Walkspeed Value",
+    Text = "Value",
     Default = 16,
     Min = 1,
     Max = 35,
@@ -85,7 +83,7 @@ MainLeftGroup:AddToggle("jptoggle", {
 })
 
 MainLeftGroup:AddSlider("jpslider", {
-    Text = "JumpPower Value",
+    Text = "Value",
     Default = 50,
     Min = 1,
     Max = 65,
@@ -108,7 +106,7 @@ MainLeftGroup:AddToggle("hheighttoggle", {
 })
 
 MainLeftGroup:AddSlider("hheightslider", {
-    Text = "HipHeight Value",
+    Text = "Value",
     Default = 2,
     Min = 0.1,
     Max = 6.5,
@@ -125,6 +123,9 @@ MainLeftGroup:AddToggle("msatoggle", {
     Text = "No Mountain Slip",
     Default = false,
     Tooltip = "Prevents slipping on mountains",
+    Callback = function(Value)
+        updmsa()
+    end,
 })
 
 MainRightGroup:AddButton({
@@ -151,7 +152,7 @@ MainRightGroup:AddButton({
     DoubleClick = false,
 })
 
--- Combat Tab
+-- COMBAT TAB
 local CombatLeftGroup = Tabs.Combat:AddLeftGroupbox("Kill Aura")
 local CombatRightGroup = Tabs.Combat:AddRightGroupbox("Auto Heal")
 
@@ -161,7 +162,7 @@ CombatLeftGroup:AddToggle("killauratoggle", {
 })
 
 CombatLeftGroup:AddSlider("killaurarange", {
-    Text = "Kill Aura Range",
+    Text = "Range",
     Default = 5,
     Min = 1,
     Max = 9,
@@ -177,7 +178,7 @@ CombatLeftGroup:AddDropdown("katargetcountdropdown", {
 })
 
 CombatLeftGroup:AddSlider("kaswingcooldownslider", {
-    Text = "Attack Cooldown",
+    Text = "Attack Cooldown (s)",
     Default = 0.1,
     Min = 0.01,
     Max = 1.01,
@@ -191,7 +192,7 @@ CombatRightGroup:AddToggle("AutoHealToggle", {
 })
 
 CombatRightGroup:AddSlider("HealPercent", {
-    Text = "Heal to %",
+    Text = "Heal to",
     Default = 0.1,
     Min = 1,
     Max = 100,
@@ -212,9 +213,10 @@ CombatRightGroup:AddDropdown("HealFruitDropDown", {
     Text = "Select Fruit to eat",
     Values = {"Bloodfruit", "Bluefruit", "Lemon", "Coconut", "Jelly", "Banana", "Orange", "Oddberry", "Berry", "Strangefruit", "Strawberry", "Sunjfruit", "Pumpkin", "Prickly Pear", "Apple", "Barley", "Cloudberry", "Carrot"},
     Default = "Bloodfruit",
+    Multi = false,
 })
 
--- Map Tab
+-- MAP TAB
 local MapLeftGroup = Tabs.Map:AddLeftGroupbox("Resource Aura")
 local MapRightGroup = Tabs.Map:AddRightGroupbox("Critter Aura")
 
@@ -224,7 +226,7 @@ MapLeftGroup:AddToggle("resourceauratoggle", {
 })
 
 MapLeftGroup:AddSlider("resourceaurarange", {
-    Text = "Resource Range",
+    Text = "Range",
     Default = 20,
     Min = 1,
     Max = 20,
@@ -240,7 +242,7 @@ MapLeftGroup:AddDropdown("resourcetargetdropdown", {
 })
 
 MapLeftGroup:AddSlider("resourcecooldownslider", {
-    Text = "Swing Cooldown",
+    Text = "Swing Cooldown (s)",
     Default = 0.1,
     Min = 0.01,
     Max = 1.01,
@@ -254,7 +256,7 @@ MapRightGroup:AddToggle("critterauratoggle", {
 })
 
 MapRightGroup:AddSlider("critterrangeslider", {
-    Text = "Critter Range",
+    Text = "Range",
     Default = 20,
     Min = 1,
     Max = 20,
@@ -270,7 +272,7 @@ MapRightGroup:AddDropdown("crittertargetdropdown", {
 })
 
 MapRightGroup:AddSlider("crittercooldownslider", {
-    Text = "Swing Cooldown",
+    Text = "Swing Cooldown (s)",
     Default = 0.1,
     Min = 0.01,
     Max = 1.01,
@@ -278,7 +280,7 @@ MapRightGroup:AddSlider("crittercooldownslider", {
     Suffix = "s",
 })
 
--- Pickup Tab
+-- PICKUP TAB
 local PickupLeftGroup = Tabs.Pickup:AddLeftGroupbox("Auto Pickup")
 local PickupRightGroup = Tabs.Pickup:AddRightGroupbox("Auto Drop")
 
@@ -333,7 +335,7 @@ PickupRightGroup:AddInput("droptextbox", {
     Placeholder = "Enter item name",
 })
 
--- Farming Tab
+-- FARMING TAB
 local FarmingLeftGroup = Tabs.Farming:AddLeftGroupbox("Auto Farming")
 local FarmingRightGroup = Tabs.Farming:AddRightGroupbox("Tween & Plantbox")
 
@@ -341,6 +343,7 @@ FarmingLeftGroup:AddDropdown("fruitdropdown", {
     Text = "Select Fruit",
     Values = {"Bloodfruit", "Bluefruit", "Lemon", "Coconut", "Jelly", "Banana", "Orange", "Oddberry", "Berry", "Strangefruit", "Strawberry", "Sunjfruit", "Pumpkin", "Prickly Pear", "Apple", "Barley", "Cloudberry", "Carrot"},
     Default = "Bloodfruit",
+    Multi = false,
 })
 
 FarmingLeftGroup:AddToggle("planttoggle", {
@@ -358,7 +361,7 @@ FarmingLeftGroup:AddSlider("plantrange", {
 })
 
 FarmingLeftGroup:AddSlider("plantdelay", {
-    Text = "Plant Delay",
+    Text = "Plant Delay (s)",
     Default = 0.1,
     Min = 0.01,
     Max = 1,
@@ -380,6 +383,9 @@ FarmingLeftGroup:AddSlider("harvestrange", {
     Suffix = " studs",
 })
 
+FarmingRightGroup:AddLabel("Tween Stuff"):SetText("Tween Stuff")
+FarmingRightGroup:AddLabel("wish this ui was more like linoria :("):SetText("wish this ui was more like linoria :(")
+
 FarmingRightGroup:AddToggle("tweentoplantbox", {
     Text = "Tween to Plant Box",
     Default = false,
@@ -391,13 +397,15 @@ FarmingRightGroup:AddToggle("tweentobush", {
 })
 
 FarmingRightGroup:AddSlider("tweenrange", {
-    Text = "Tween Range",
+    Text = "Range",
     Default = 250,
     Min = 1,
     Max = 250,
     Rounding = 1,
     Suffix = " studs",
 })
+
+FarmingRightGroup:AddLabel("Plantbox Stuff"):SetText("Plantbox Stuff")
 
 FarmingRightGroup:AddButton({
     Text = "Place 16x16 Plantboxes (256)",
@@ -439,10 +447,7 @@ FarmingRightGroup:AddButton({
     DoubleClick = false,
 })
 
-FarmingRightGroup:AddLabel("Tween Stuff"):SetText("Tween Stuff")
-FarmingRightGroup:AddLabel("Plantbox Stuff"):SetText("Plantbox Stuff")
-
--- Extra Tab
+-- EXTRA TAB
 local ExtraLeftGroup = Tabs.Extra:AddLeftGroupbox("Scripts")
 local ExtraRightGroup = Tabs.Extra:AddRightGroupbox("Item Orbit")
 
@@ -454,6 +459,9 @@ ExtraLeftGroup:AddButton({
     DoubleClick = false,
     Tooltip = "inf yield chat",
 })
+
+ExtraRightGroup:AddLabel("orbit breaks sometimes"):SetText("orbit breaks sometimes")
+ExtraRightGroup:AddLabel("i dont give a shit"):SetText("i dont give a shit")
 
 ExtraRightGroup:AddToggle("orbittoggle", {
     Text = "Item Orbit",
@@ -496,18 +504,16 @@ ExtraRightGroup:AddSlider("itemheight", {
     Suffix = " studs",
 })
 
-ExtraRightGroup:AddLabel("Orbit Info"):SetText("orbit breaks sometimes\ni dont give a shit")
---{END OF TAB ELEMENTS}
-
+-- Функции из вашего скрипта
 local wscon, hhcon
 local function updws()
     if wscon then wscon:Disconnect() end
 
-    if Options.wstoggle.Value or Options.jptoggle.Value then
+    if Toggles.wstoggle.Value or Toggles.jptoggle.Value then
         wscon = runs.RenderStepped:Connect(function()
             if hum then
-                hum.WalkSpeed = Options.wstoggle.Value and Options.wsslider.Value or 16
-                hum.JumpPower = Options.jptoggle.Value and Options.jpslider.Value or 50
+                hum.WalkSpeed = Toggles.wstoggle.Value and Options.wsslider.Value or 16
+                hum.JumpPower = Toggles.jptoggle.Value and Options.jpslider.Value or 50
             end
         end)
     end
@@ -516,7 +522,7 @@ end
 local function updhh()
     if hhcon then hhcon:Disconnect() end
 
-    if Options.hheighttoggle.Value then
+    if Toggles.hheighttoggle.Value then
         hhcon = runs.RenderStepped:Connect(function()
             if hum then
                 hum.HipHeight = Options.hheightslider.Value
@@ -535,15 +541,15 @@ local function onplradded(newChar)
 end
 
 plr.CharacterAdded:Connect(onplradded)
-Options.wstoggle:OnChanged(updws)
-Options.jptoggle:OnChanged(updws)
-Options.hheighttoggle:OnChanged(updhh)
+Toggles.wstoggle:OnChanged(updws)
+Toggles.jptoggle:OnChanged(updws)
+Toggles.hheighttoggle:OnChanged(updhh)
 
 local slopecon
 local function updmsa()
     if slopecon then slopecon:Disconnect() end
 
-    if Options.msatoggle.Value then
+    if Toggles.msatoggle.Value then
         slopecon = game:GetService("RunService").RenderStepped:Connect(function()
             if hum then
                 hum.MaxSlopeAngle = 90
@@ -556,7 +562,7 @@ local function updmsa()
     end
 end
 
-Options.msatoggle:OnChanged(updmsa)
+Toggles.msatoggle:OnChanged(updmsa)
 
 local function getlayout(itemname)
     local inventory = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightPanel.Inventory:FindFirstChild("List")
@@ -578,7 +584,6 @@ local function swingtool(tspmogngicl)
 end
 
 local function Eating(itemname)
-
     local inventory = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightPanel.Inventory:FindFirstChild("List")
     if not inventory then return end
 
@@ -614,7 +619,7 @@ local function drop(itemname)
 end
 
 local selecteditems = {}
-itemdropdown:OnChanged(function(Value)
+Options.itemdropdown:OnChanged(function(Value)
     selecteditems = {} 
     for item, State in pairs(Value) do
         if State then
@@ -623,9 +628,10 @@ itemdropdown:OnChanged(function(Value)
     end
 end)
 
+-- Kill Aura
 task.spawn(function()
     while true do
-        if not Options.killauratoggle.Value then
+        if not Toggles.killauratoggle.Value then
             task.wait(0.1)
             continue
         end
@@ -669,9 +675,10 @@ task.spawn(function()
     end
 end)
 
+-- Resource Aura
 task.spawn(function()
     while true do
-        if not Options.resourceauratoggle.Value then
+        if not Toggles.resourceauratoggle.Value then
             task.wait(0.1)
             continue
         end
@@ -721,9 +728,10 @@ task.spawn(function()
     end
 end)
 
+-- Auto Heal
 task.spawn(function()
    while true do 
-      if not Options.AutoHealToggle.Value then
+      if not Toggles.AutoHealToggle.Value then
           task.wait(0.1)
           continue
       end
@@ -737,9 +745,10 @@ task.spawn(function()
    end
 end)
 
+-- Critter Aura
 task.spawn(function()
     while true do
-        if not Options.critterauratoggle.Value then
+        if not Toggles.critterauratoggle.Value then
             task.wait(0.1)
             continue
         end
@@ -780,13 +789,12 @@ task.spawn(function()
     end
 end)
 
-
-
+-- Auto Pickup
 task.spawn(function()
     while true do
         local range = tonumber(Options.pickuprange.Value) or 35
 
-        if Options.autopickuptoggle.Value then
+        if Toggles.autopickuptoggle.Value then
             for _, item in ipairs(workspace.Items:GetChildren()) do
                 if item:IsA("BasePart") or item:IsA("MeshPart") then
                     local selecteditem = item.Name
@@ -802,7 +810,7 @@ task.spawn(function()
             end
         end
 
-        if Options.chestpickuptoggle.Value then
+        if Toggles.chestpickuptoggle.Value then
             for _, chest in ipairs(workspace.Deployables:GetChildren()) do
                 if chest:IsA("Model") and chest:FindFirstChild("Contents") then
                     for _, item in ipairs(chest.Contents:GetChildren()) do
@@ -826,10 +834,11 @@ task.spawn(function()
     end
 end)
 
+-- Auto Drop
 local debounce = 0
-local cd = 0 -- i genuinely dont know why it breaks now, but turn this up to 0.3 - 0.2 to stop it from dropping other items
+local cd = 0
 runs.Heartbeat:Connect(function()
-    if Options.droptoggle.Value then
+    if Toggles.droptoggle.Value then
         if tick() - debounce >= cd then
             local selectedItem = Options.dropdropdown.Value
             drop(selectedItem)
@@ -839,7 +848,7 @@ runs.Heartbeat:Connect(function()
 end)
 
 runs.Heartbeat:Connect(function()
-    if Options.droptogglemanual.Value then
+    if Toggles.droptogglemanual.Value then
         if tick() - debounce >= cd then
             local itemname = Options.droptextbox.Value
             drop(itemname)
@@ -848,6 +857,7 @@ runs.Heartbeat:Connect(function()
     end
 end)
 
+-- Farming Functions
 local plantedboxes = {}
 local fruittoitemid = {
     Bloodfruit = 94,
@@ -926,7 +936,7 @@ local function tween(target)
 end
 
 local function tweenplantbox(range)
-    while tweenplantboxtoggle.Value do
+    while Toggles.tweentoplantbox.Value do
         local plantboxes = getpbs(range)
         table.sort(plantboxes, function(a, b) return a.dist < b.dist end)
 
@@ -943,7 +953,7 @@ local function tweenplantbox(range)
 end
 
 local function tweenpbs(range, fruitname)
-    while tweenbushtoggle.Value do
+    while Toggles.tweentobush.Value do
         local bushes = getbushes(range, fruitname)
         table.sort(bushes, function(a, b) return a.dist < b.dist end)
 
@@ -970,9 +980,10 @@ local function tweenpbs(range, fruitname)
     end
 end
 
+-- Auto Plant
 task.spawn(function()
     while true do
-        if not Options.planttoggle.Value then
+        if not Toggles.planttoggle.Value then
             task.wait(0.1)
             continue
         end
@@ -995,9 +1006,10 @@ task.spawn(function()
     end
 end)
 
+-- Auto Harvest
 task.spawn(function()
     while true do
-        if not Options.harvesttoggle.Value then
+        if not Toggles.harvesttoggle.Value then
             task.wait(0.1)
             continue
         end
@@ -1012,9 +1024,10 @@ task.spawn(function()
     end
 end)
 
+-- Tween to Plant Box
 task.spawn(function()
     while true do
-        if not tweenplantboxtoggle.Value then
+        if not Toggles.tweentoplantbox.Value then
             task.wait(0.1)
             continue
         end
@@ -1023,9 +1036,10 @@ task.spawn(function()
     end
 end)
 
+-- Tween to Bush
 task.spawn(function()
     while true do
-        if not tweenbushtoggle.Value then
+        if not Toggles.tweentobush.Value then
             task.wait(0.1)
             continue
         end
@@ -1035,6 +1049,7 @@ task.spawn(function()
     end
 end)
 
+-- Place Structure
 placestructure = function(gridsize)
     if not plr or not plr.Character then return end
 
@@ -1061,11 +1076,12 @@ placestructure = function(gridsize)
     end
 end
 
+-- Item Orbit
 local orbiton, range, orbitradius, orbitspeed, itemheight = false, 20, 10, 5, 3
 local attacheditems, itemangles, lastpositions = {}, {}, {}
 local itemsfolder = workspace:WaitForChild("Items")
 
-orbittoggle:OnChanged(function(value)
+Toggles.orbittoggle:OnChanged(function(value)
     orbiton = value
     if not orbiton then
         for _, bp in pairs(attacheditems) do bp:Destroy() end
@@ -1095,10 +1111,10 @@ orbittoggle:OnChanged(function(value)
     end
 end)
 
-orbitrangeslider:OnChanged(function(value) range = value end)
-orbitradiusslider:OnChanged(function(value) orbitradius = value end)
-orbitspeedslider:OnChanged(function(value) orbitspeed = value end)
-itemheightslider:OnChanged(function(value) itemheight = value end)
+Options.orbitrange:OnChanged(function(value) range = value end)
+Options.orbitradius:OnChanged(function(value) orbitradius = value end)
+Options.orbitspeed:OnChanged(function(value) orbitspeed = value end)
+Options.itemheight:OnChanged(function(value) itemheight = value end)
 
 runs.RenderStepped:Connect(function()
     if not orbiton then return end
@@ -1133,7 +1149,7 @@ task.spawn(function()
     end
 end)
 
--- Инициализация ThemeManager и SaveManager
+-- Настройка ThemeManager и SaveManager
 ThemeManager:SetLibrary(Library)
 ThemeManager:SetFolder("PrivateWeedHub")
 ThemeManager:ApplyToTab(Tabs["UI Settings"])
