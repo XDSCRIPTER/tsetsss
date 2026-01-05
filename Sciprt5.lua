@@ -763,6 +763,8 @@ task.spawn(function()
         if char and not char:FindFirstChild("Highlight") then
             local high = Instance.new("Highlight")
             high.Parent = char
+            high.OutlineTransparency = 0.9
+            high.FillTransparency = 0.2
         end
 
         -- Обновляем запись о последнем подсвеченном персонаже
