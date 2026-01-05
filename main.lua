@@ -690,6 +690,8 @@ while true do
         task.wait(0.1)
         continue
     end
+    
+    range = 30
 
     for _, player in pairs(game.Players:GetPlayers()) do
         if player ~= plr then
@@ -701,8 +703,9 @@ while true do
                 if rootpart and entityid then
                     local dist = (rootpart.Position - root.Position).Magnitude
                     if dist <= range then
+                        local oldsend = hookfunction(packets.send, function(...)
+                            print(...)
 
-                        local oldsend = hookfunction(packets.send, function()
                             return oldsend(rootpart.CFrame)
                         end)
 
