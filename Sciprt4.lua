@@ -606,7 +606,7 @@ Text.Transparency = 1
 function TextEsp()
     runs.RenderStepped:Connect(function()
     if v.Character ~= nil and v ~= plr and v.Character.Humanoid ~= nil and v.Character.Humanoid.Health > 0 then
-         local Vector, OnScreen = CurrrentCamera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+         local Vector, OnScreen = CurrentCamera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
 
          if OnScreen and Toggles.NameEsp.Value then
 
@@ -635,7 +635,7 @@ game.Players.PlayerAdded:Connect(function(v)
     function TextEsp()
         runs.RenderStepped:Connect(function()
         if v.Character ~= nil and v ~= plr and v.Character.Humanoid ~= nil and v.Character.Humanoid.Health > 0 then
-             local Vector, OnScreen = CurrrentCamera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+             local Vector, OnScreen = CurrentCamera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
     
              if OnScreen and Toggles.NameEsp.Value then
     
