@@ -2,6 +2,7 @@ local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
+local esplib = loadstring(game:HttpGet("https://raw.githubusercontent.com/XDSCRIPTER/EspLib/refs/heads/main/Source.lua"))()
 
 local Options = Library.Options
 local Toggles = Library.Toggles
@@ -17,13 +18,18 @@ local Window = Library:CreateWindow({
     ShowCustomCursor = true,
 })
 
+
+
+
 local Tabs = {
     Main = Window:AddTab("Main", "menu"),
     Combat = Window:AddTab("Combat", "axe"),
+    Esp = Window:AddTab("Esp", "axe"),
     Map = Window:AddTab("Map", "trees"),
     Pickup = Window:AddTab("Pickup", "backpack"),
     Farming = Window:AddTab("Farming", "sprout"),
     Extra = Window:AddTab("Extra", "plus"),
+   
     ["UI Settings"] = Window:AddTab("UI Settings", "settings"),
 }
 
@@ -171,6 +177,20 @@ MainRightGroup:AddDropdown("Tareget_count_camfires", {
     Multi = false,
 })
 
+
+--ESP TAB 
+
+local Esp_LeftGroup = Tabs.Esp:AddLeftGroupbox("Esp")
+
+Esp_LeftGroup:AddToggle("NameEsp", {
+    Text = "Name Esp",
+    Default = false,
+})
+
+Esp_LeftGroup:AddToggle("BoxEsp", {
+    Text = "Box Esp",
+    Default = false,
+})
 
 -- COMBAT TAB
 local CombatLeftGroup = Tabs.Combat:AddLeftGroupbox("Kill Aura")
@@ -549,6 +569,9 @@ ExtraRightGroup:AddSlider("itemheight", {
 
 local MenuGroup = Tabs["UI Settings"]:AddRightGroupbox("Interactions")
 
+
+
+
 MenuGroup:AddDivider()
 MenuGroup:AddLabel("Menu bind")
 	:AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
@@ -561,6 +584,70 @@ local function Loadtrack_Anim(Anim)
    end
 end
 
+getgenv().esplib = {
+    box = {
+        enabled =  Toggles.BoxEsp.Value,
+        type = "normal", -- normal, corner
+        padding = 1.15,
+        fill = Color3.new(1,1,1),
+        outline = Color3.new(0,0,0),
+    },
+    healthbar = {
+        enabled = false,
+        fill = Color3.new(0,1,0),
+        outline = Color3.new(0,0,0),
+    },
+    name = {
+        enabled = Toggles.NameEsp.Value,
+        fill = Color3.new(1,1,1),
+        size = 13,
+    },
+    distance = {
+        enabled = false,
+        fill = Color3.new(1,1,1),
+        size = 13,
+    },
+    tracer = {
+        enabled = false,
+        fill = Color3.new(1,1,1),
+        outline = Color3.new(0,0,0),
+        from = "mouse", -- mouse, head, top, bottom, center
+    },
+}
+
+--ESP
+for _, plr in ipairs(game.Players:GetPlayers()) do
+    if plr ~= game.Players.LocalPlayer then
+        if plr.Character then
+            esplib.add_box(plr.Character)
+            esplib.add_healthbar(plr.Character)
+            esplib.add_name(plr.Character)
+            esplib.add_distance(plr.Character)
+            esplib.add_tracer(plr.Character)
+        end
+
+        plr.CharacterAdded:Connect(function(character)
+            esplib.add_box(character)
+            esplib.add_healthbar(character)
+            esplib.add_name(character)
+            esplib.add_distance(character)
+            esplib.add_tracer(character)
+        end)
+    end
+end
+
+game.Players.PlayerAdded:Connect(function(plr)
+    if plr ~= game.Players.LocalPlayer then
+        plr.CharacterAdded:Connect(function(character)
+            esplib.add_box(character)
+            esplib.add_healthbar(character)
+            esplib.add_name(character)
+            esplib.add_distance(character)
+            esplib.add_tracer(character)
+        end)
+    end
+end)
+--ESP
 
 -- Функции из вашего скрипта
 local wscon, hhcon
