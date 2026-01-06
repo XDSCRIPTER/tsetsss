@@ -192,10 +192,6 @@ Esp_LeftGroup:AddToggle("DistanceEsp", {
     Default = false,
 })
 
-Esp_LeftGroup:AddToggle("HealthBar", {
-    Text = "Health Bar Esp",
-    Default = false,
-})
 
 -- COMBAT TAB
 local CombatLeftGroup = Tabs.Combat:AddLeftGroupbox("Kill Aura")
@@ -583,10 +579,6 @@ local function createDrawingForPlayer(player)
         Box = Drawing.new("Square"),
         Tracer = Drawing.new("Line"),
         Distance = Drawing.new("Text"),
-        HealthBar = {
-            Outline = Drawing.new("Square"),
-            Fill = Drawing.new("Square")
-        }
     }
     
     drawing.Text.Visible = false
@@ -614,8 +606,7 @@ local function updateESP()
         drawing.Box.Visible = false
         drawing.Tracer.Visible = false
         drawing.Distance.Visible = false
-        drawing.HealthBar.Outline.Visible = false
-        drawing.HealthBar.Fill.Visible = false
+
         
         if player and player.Character and player ~= plr then
             local character = player.Character
@@ -667,32 +658,8 @@ local function updateESP()
 
                     end
                     
-                    -- Health Bar ESP
-                    if Toggles.HealthBar.Value then
-                        local healthPercent = humanoid.Health / humanoid.MaxHealth
-                        local barWidth = 30
-                        local barHeight = 4
-                        local barPos = screenPos - Vector2.new(barWidth/2, 40)
-                        
-                        drawing.HealthBar.Outline.Size = Vector2.new(barWidth, barHeight)
-                        drawing.HealthBar.Outline.Position = barPos
-                        drawing.HealthBar.Outline.Visible = true
-                        drawing.HealthBar.Outline.Color = Color3.new(0,0,0)
-                        drawing.HealthBar.Outline.Outline = true
-                        
-                        drawing.HealthBar.Fill.Size = Vector2.new(barWidth * healthPercent, barHeight)
-                        drawing.HealthBar.Fill.Position = barPos
-                        drawing.HealthBar.Fill.Visible = true
-                        
-                        -- Меняем цвет в зависимости от здоровья
-                        if healthPercent > 0.5 then
-                            drawing.HealthBar.Fill.Color = Color3.new(0, 1, 0)
-                        elseif healthPercent > 0.25 then
-                            drawing.HealthBar.Fill.Color = Color3.new(1, 1, 0)
-                        else
-                            drawing.HealthBar.Fill.Color = Color3.new(1, 0, 0)
-                        end
-                    end
+                
+                  
                 end
                 -- Если не на экране, все элементы уже скрыты в начале функции
             end
