@@ -24,7 +24,7 @@ local Tabs = {
     Pickup = Window:AddTab("Pickup", "backpack"),
     Farming = Window:AddTab("Farming", "sprout"),
     Extra = Window:AddTab("Extra", "plus"),
-    Settings = Window:AddTab("UI Settings", "settings"),
+    ["UI Settings"] = Window:AddTab("UI Settings", "settings"),
 }
 
 -- Инициализация сервисов и переменных
@@ -140,7 +140,7 @@ MainRightGroup:AddToggle("CampFires_Interact", {
 
 MainRightGroup:AddDropdown("CampFire_Fule", {
     Text = "Fuel for campfire",
-    Values = {"Log", "Leaves", "Coal"},
+    Values = {"Log", "Leaves", "Coal", "Wood"},
     Default = "Leaves",
     Multi = false,
 })
@@ -547,6 +547,21 @@ ExtraRightGroup:AddSlider("itemheight", {
     Suffix = " studs",
 })
 
+local MenuGroup = Tabs["UI Settings"]:AddRightGroupbox("Interactions")
+
+MenuGroup:AddDivider()
+MenuGroup:AddLabel("Menu bind")
+	:AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
+
+local function Loadtrack_Anim(Anim)
+   if plr and plr.Character and plr.Character:FindFirstChild("Humanoid") and plr.Character:FindFirstChild("Humanoid").Health > 0 and plr.Character:FindFirstChild("Humanoid").Animator then
+    track = plr.LocalPlayer.Character:FindFirstChild("Humanoid").Animator:LoadAnimation(Anim)
+
+    return track
+   end
+end
+
+
 -- Функции из вашего скрипта
 local wscon, hhcon
 local function updws()
@@ -630,6 +645,8 @@ end
 local function swingtool(tspmogngicl)
     if packets.SwingTool and packets.SwingTool.send then
         packets.SwingTool.send(tspmogngicl)
+
+        Loadtrack_Anim(game:GetService("ReplicatedStorage").Animations.Slash)
     end
 end
 
@@ -1354,6 +1371,8 @@ task.spawn(function()
     end
 end)
 
+
+
 -- Настройка ThemeManager и SaveManager
 ThemeManager:SetLibrary(Library)
 ThemeManager:SetFolder("PrivateWeedHub")
@@ -1370,3 +1389,4 @@ Library:Notify("Private Weed Hub loaded successfully!", 5)
 
 -- Выбор первой вкладки
 Library:SelectTab(1)
+
