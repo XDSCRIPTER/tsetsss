@@ -619,11 +619,11 @@ function TextEsp()
          end
     end
     end)
-
+    corountine.wrap(TextEsp)()
 end 
-corountine.wrap(TextEsp)()
 
-end)
+
+
 
 
 game.Players.PlayerAdded:Connect(function(v) 
@@ -653,7 +653,7 @@ game.Players.PlayerAdded:Connect(function(v)
     corountine.wrap(TextEsp)()
     
     end)
-end)
+
 
 local function Loadtrack_Anim(Anim)
    if plr and plr.Character and plr.Character:FindFirstChild("Humanoid") and plr.Character:FindFirstChild("Humanoid").Health > 0 and plr.Character:FindFirstChild("Humanoid").Animator then
