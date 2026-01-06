@@ -600,6 +600,7 @@ local function createDrawingForPlayer(player)
 
     drawing.Tracer.Color = Color3.new(1,1,1)
     drawing.Tracer.Outline = true
+    drawing.Tracer.OutlineColor = Color3.new(0,0,0)
     drawing.Thickness = 1
 
     drawings[player] = drawing
@@ -630,7 +631,7 @@ local function updateESP()
                     
                     -- Name ESP
                     if Toggles.NameEsp.Value then
-                        drawing.Text.Position = screenPos - Vector2.new(0, 30)
+                        drawing.Text.Position = screenPos - Vector2.new(0, 20)
                         drawing.Text.Text = player.Name
                         drawing.Text.Visible = true
                     end
@@ -656,7 +657,7 @@ local function updateESP()
                     if Toggles.DistanceEsp.Value then
                         local distance = (rootPart.Position - root.Position).Magnitude
                         drawing.Distance.Text = tostring(math.floor(distance)) .. " studs"
-                        drawing.Distance.Position = screenPos + Vector2.new(0, 20)
+                        drawing.Distance.Position = screenPos + Vector2.new(0, 5)
                         drawing.Distance.Visible = true
 
                         if drawing.Distance.Color ~= Color3.new(1,1,1) and not drawing.Distance.Outline then
