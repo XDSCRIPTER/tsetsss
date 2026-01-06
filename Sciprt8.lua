@@ -555,7 +555,7 @@ MenuGroup:AddLabel("Menu bind")
 
 local function Loadtrack_Anim(Anim)
    if plr and plr.Character and plr.Character:FindFirstChild("Humanoid") and plr.Character:FindFirstChild("Humanoid").Health > 0 and plr.Character:FindFirstChild("Humanoid").Animator then
-    track = plr.LocalPlayer.Character:FindFirstChild("Humanoid").Animator:LoadAnimation(Anim)
+    track = plr.Character:FindFirstChild("Humanoid").Animator:LoadAnimation(Anim)
 
     return track
    end
