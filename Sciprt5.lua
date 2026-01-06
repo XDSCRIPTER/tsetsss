@@ -619,9 +619,10 @@ function TextEsp()
          end
     end
     end)
-    coroutine.wrap(TextEsp)()
+ 
 end 
-
+   coroutine.wrap(TextEsp)()
+end
 
 
 
