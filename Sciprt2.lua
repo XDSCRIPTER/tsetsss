@@ -2,7 +2,6 @@ local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
-local esplib = loadstring(game:HttpGet("https://raw.githubusercontent.com/XDSCRIPTER/EspLib/refs/heads/main/Source.lua"))()
 
 local Options = Library.Options
 local Toggles = Library.Toggles
@@ -614,6 +613,7 @@ getgenv().esplib = {
         from = "mouse", -- mouse, head, top, bottom, center
     },
 }
+local esplib = loadstring(game:HttpGet("https://raw.githubusercontent.com/XDSCRIPTER/EspLib/refs/heads/main/Source.lua"))()
 
 --ESP
 for _, plr in ipairs(game.Players:GetPlayers()) do
