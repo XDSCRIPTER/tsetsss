@@ -624,7 +624,7 @@ local function updateESP()
                     -- Name ESP
                     if Toggles.NameEsp.Value then
                         drawing.Text.Position = screenPos - Vector2.new(0, 20)
-                        drawing.Text.Text = player.Name.. humanoid.Health.. "/100"
+                        drawing.Text.Text = player.Name.. " ".. humanoid.Health.. "/100"
                         drawing.Text.Visible = true
                     end
                     
