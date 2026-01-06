@@ -583,6 +583,8 @@ local function Loadtrack_Anim(Anim)
    end
 end
 
+task.spawn(function()
+while true do
 getgenv().esplib = {
     box = {
         enabled =  Toggles.BoxEsp.Value,
@@ -613,6 +615,9 @@ getgenv().esplib = {
         from = "mouse", -- mouse, head, top, bottom, center
     },
 }
+task.wait(0.1)
+end
+end)
 local esplib = loadstring(game:HttpGet("https://raw.githubusercontent.com/XDSCRIPTER/EspLib/refs/heads/main/Source.lua"))()
 
 --ESP
