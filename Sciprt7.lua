@@ -591,7 +591,7 @@ local function createDrawingForPlayer(player)
     
     drawing.Text.Visible = false
     drawing.Text.Text = player.Name
-    drawing.Text.Color = Color3.new(1, 1, 1)
+    drawing.Text.Color = player.Team.TeamColor
     drawing.Text.Transparency = 1
     drawing.Text.Size = 14
     
@@ -601,6 +601,14 @@ end
 
 local function updateESP()
     for player, drawing in pairs(drawings) do
+        -- Сначала скрываем все элементы ESP
+        drawing.Text.Visible = false
+        drawing.Box.Visible = false
+        drawing.Tracer.Visible = false
+        drawing.Distance.Visible = false
+        drawing.HealthBar.Outline.Visible = false
+        drawing.HealthBar.Fill.Visible = false
+        
         if player and player.Character and player ~= plr then
             local character = player.Character
             local humanoid = character:FindFirstChild("Humanoid")
@@ -609,83 +617,68 @@ local function updateESP()
             if humanoid and humanoid.Health > 0 and rootPart then
                 local vector, onScreen = CurrentCamera:worldToViewportPoint(rootPart.Position)
                 
+                -- Ключевое исправление: проверяем, находится ли игрок на экране
                 if onScreen then
+                    local screenPos = Vector2.new(vector.X, vector.Y)
+                    
                     -- Name ESP
                     if Toggles.NameEsp.Value then
-                        drawing.Text.Position = Vector2.new(vector.X, vector.Y)
+                        drawing.Text.Position = screenPos - Vector2.new(0, 30)
+                        drawing.Text.Text = player.Name
                         drawing.Text.Visible = true
-                    else
-                        drawing.Text.Visible = false
                     end
                     
                     -- Box ESP
                     if Toggles.BoxEsp.Value then
-                        -- Здесь должна быть логика для Box ESP
-                    else
-                        drawing.Box.Visible = false
+                        local height = 50
+                        local width = 25
+                        drawing.Box.Size = Vector2.new(width, height)
+                        drawing.Box.Position = screenPos - Vector2.new(width/2, height/2)
+                        drawing.Box.Visible = true
                     end
                     
                     -- Tracer ESP
                     if Toggles.TracerEsp.Value then
-                        -- Здесь должна быть логика для Tracer ESP
-                    else
-                        drawing.Tracer.Visible = false
+                        local screenSize = CurrentCamera.ViewportSize
+                        drawing.Tracer.From = Vector2.new(screenSize.X/2, screenSize.Y)
+                        drawing.Tracer.To = screenPos
+                        drawing.Tracer.Visible = true
                     end
                     
                     -- Distance ESP
                     if Toggles.DistanceEsp.Value then
                         local distance = (rootPart.Position - root.Position).Magnitude
                         drawing.Distance.Text = tostring(math.floor(distance)) .. " studs"
-                        drawing.Distance.Position = Vector2.new(vector.X, vector.Y + 20)
+                        drawing.Distance.Position = screenPos + Vector2.new(0, 20)
                         drawing.Distance.Visible = true
-                    else
-                        drawing.Distance.Visible = false
                     end
                     
                     -- Health Bar ESP
                     if Toggles.HealthBar.Value then
-                        -- Здесь должна быть логика для Health Bar ESP
-                    else
-                        drawing.HealthBar.Outline.Visible = false
-                        drawing.HealthBar.Fill.Visible = false
-                    end
-                else
-                    for _, element in pairs(drawing) do
-                        if typeof(element) == "table" then
-                            for _, subElement in pairs(element) do
-                                if typeof(subElement) == "userdata" then
-                                    subElement.Visible = false
-                                end
-                            end
-                        elseif typeof(element) == "userdata" then
-                            element.Visible = false
+                        local healthPercent = humanoid.Health / humanoid.MaxHealth
+                        local barWidth = 30
+                        local barHeight = 4
+                        local barPos = screenPos - Vector2.new(barWidth/2, 40)
+                        
+                        drawing.HealthBar.Outline.Size = Vector2.new(barWidth, barHeight)
+                        drawing.HealthBar.Outline.Position = barPos
+                        drawing.HealthBar.Outline.Visible = true
+                        
+                        drawing.HealthBar.Fill.Size = Vector2.new(barWidth * healthPercent, barHeight)
+                        drawing.HealthBar.Fill.Position = barPos
+                        drawing.HealthBar.Fill.Visible = true
+                        
+                        -- Меняем цвет в зависимости от здоровья
+                        if healthPercent > 0.5 then
+                            drawing.HealthBar.Fill.Color = Color3.new(0, 1, 0)
+                        elseif healthPercent > 0.25 then
+                            drawing.HealthBar.Fill.Color = Color3.new(1, 1, 0)
+                        else
+                            drawing.HealthBar.Fill.Color = Color3.new(1, 0, 0)
                         end
                     end
                 end
-            else
-                for _, element in pairs(drawing) do
-                    if typeof(element) == "table" then
-                        for _, subElement in pairs(element) do
-                            if typeof(subElement) == "userdata" then
-                                subElement.Visible = false
-                            end
-                        end
-                    elseif typeof(element) == "userdata" then
-                        element.Visible = false
-                    end
-                end
-            end
-        else
-            for _, element in pairs(drawing) do
-                if typeof(element) == "table" then
-                    for _, subElement in pairs(element) do
-                        if typeof(subElement) == "userdata" then
-                            subElement.Visible = false
-                        end
-                    end
-                elseif typeof(element) == "userdata" then
-                    element.Visible = false
-                end
+                -- Если не на экране, все элементы уже скрыты в начале функции
             end
         end
     end
@@ -708,15 +701,13 @@ end)
 -- Обработчик для ушедших игроков
 Players.PlayerRemoving:Connect(function(player)
     if drawings[player] then
-        for _, element in pairs(drawings[player]) do
-            if typeof(element) == "table" then
-                for _, subElement in pairs(element) do
-                    subElement:Remove()
-                end
-            else
-                element:Remove()
-            end
-        end
+        local drawing = drawings[player]
+        drawing.Text:Remove()
+        drawing.Box:Remove()
+        drawing.Tracer:Remove()
+        drawing.Distance:Remove()
+        drawing.HealthBar.Outline:Remove()
+        drawing.HealthBar.Fill:Remove()
         drawings[player] = nil
     end
 end)
