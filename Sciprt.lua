@@ -182,13 +182,18 @@ MainRightGroup:AddDropdown("Tareget_count_camfires", {
 local Esp_LeftGroup = Tabs.Esp:AddLeftGroupbox("Esp")
 local Esp_Settings_Group = Tabs.Esp:AddRightGroupbox("Esp")
 
-Esp_Settings_Group:AddSlider("Esp_Distance", {
-    Text = "Esp Distance",
-    Default = 750,
-    Min = 1,
-    Max = 3000,
+Esp_Settings_Group:AddSlider("EspDistance", {
+    Text = "ESP Distance",
+    Default = 1000,
+    Min = 0,
+    Max = 5000,
     Rounding = 1,
-    Suffix = "studs",
+    Suffix = " studs",
+    Callback = function(value)
+        if esplib and esplib.update_setting then
+            esplib.update_setting("maxDistance", value)
+        end
+    end
 })
 
 Esp_LeftGroup:AddToggle("NameEsp", {
