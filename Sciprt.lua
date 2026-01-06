@@ -583,44 +583,25 @@ local function Loadtrack_Anim(Anim)
    end
 end
 
-task.spawn(function()
-while true do
-getgenv().esplib = {
-    box = {
-        enabled =  Toggles.BoxEsp.Value,
-        type = "normal", -- normal, corner
-        padding = 1.15,
-        fill = Color3.new(1,1,1),
-        outline = Color3.new(0,0,0),
-    },
-    healthbar = {
-        enabled = false,
-        fill = Color3.new(0,1,0),
-        outline = Color3.new(0,0,0),
-    },
-    name = {
-        enabled = Toggles.NameEsp.Value,
-        fill = Color3.new(1,1,1),
-        size = 13,
-    },
-    distance = {
-        enabled = false,
-        fill = Color3.new(1,1,1),
-        size = 13,
-    },
-    tracer = {
-        enabled = false,
-        fill = Color3.new(1,1,1),
-        outline = Color3.new(0,0,0),
-        from = "mouse", -- mouse, head, top, bottom, center
-    },
-}
-task.wait(0.1)
-end
-end)
 local esplib = loadstring(game:HttpGet("https://raw.githubusercontent.com/XDSCRIPTER/EspLib/refs/heads/main/Source.lua"))()
 
---ESP
+-- Добавьте обработчики для обновления настроек ESP в реальном времени
+Toggles.NameEsp:OnChanged(function(value)
+    esplib.update_setting("name.enabled", value)
+end)
+
+Toggles.BoxEsp:OnChanged(function(value)
+    esplib.update_setting("box.enabled", value)
+end)
+
+-- Если хотите добавить больше настроек, добавьте их здесь:
+-- Например, для изменения цвета:
+-- Options.ESPColor:OnChanged(function(value)
+--     esplib.update_setting("box.fill", value)
+--     esplib.update_setting("name.fill", value)
+-- end)
+
+-- ESP
 for _, plr in ipairs(game.Players:GetPlayers()) do
     if plr ~= game.Players.LocalPlayer then
         if plr.Character then
