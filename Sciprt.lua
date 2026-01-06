@@ -646,7 +646,7 @@ local function swingtool(tspmogngicl)
     if packets.SwingTool and packets.SwingTool.send then
         packets.SwingTool.send(tspmogngicl)
 
-        Loadtrack_Anim(game:GetService("ReplicatedStorage").Animations.Slash)
+        Loadtrack_Anim(game:GetService("ReplicatedStorage").Animations.Slash):Play()
     end
 end
 
