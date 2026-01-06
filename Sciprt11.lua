@@ -677,6 +677,8 @@ local function updateESP()
                         drawing.HealthBar.Outline.Size = Vector2.new(barWidth, barHeight)
                         drawing.HealthBar.Outline.Position = barPos
                         drawing.HealthBar.Outline.Visible = true
+                        drawing.HealthBar.Outline.Color = Color3.new(0,0,0)
+                        drawing.HealthBar.Outline.Outline = true
                         
                         drawing.HealthBar.Fill.Size = Vector2.new(barWidth * healthPercent, barHeight)
                         drawing.HealthBar.Fill.Position = barPos
