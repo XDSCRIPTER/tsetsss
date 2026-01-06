@@ -191,6 +191,21 @@ Esp_LeftGroup:AddToggle("BoxEsp", {
     Default = false,
 })
 
+Esp_LeftGroup:AddToggle("TracerEsp", {
+    Text = "Tracer Esp",
+    Default = false,
+})
+
+Esp_LeftGroup:AddToggle("DistanceEsp", {
+    Text = "Distance Esp",
+    Default = false,
+})
+
+Esp_LeftGroup:AddToggle("HealthBar", {
+    Text = "Health Bar Esp",
+    Default = false,
+})
+
 -- COMBAT TAB
 local CombatLeftGroup = Tabs.Combat:AddLeftGroupbox("Kill Aura")
 local CombatRightGroup = Tabs.Combat:AddRightGroupbox("Auto Heal")
@@ -592,6 +607,18 @@ end)
 
 Toggles.BoxEsp:OnChanged(function(value)
     esplib.update_setting("box.enabled", value)
+end)
+
+Toggles.TracerEsp:OnChanged(function(value)
+    esplib.update_setting("tracer.enabled", value)
+end)
+
+Toggles.HealthBar:OnChanged(function(value)
+    esplib.update_setting("healthbar.enabled", value)
+end)
+
+Toggles.DistanceEsp:OnChanged(function(value)
+    esplib.update_setting("distance.enabled", value)
 end)
 
 -- Если хотите добавить больше настроек, добавьте их здесь:
