@@ -657,7 +657,7 @@ local function updateESP()
                     if Toggles.DistanceEsp.Value then
                         local distance = (rootPart.Position - root.Position).Magnitude
                         drawing.Distance.Text = tostring(math.floor(distance)) .. " studs"
-                        drawing.Distance.Position = screenPos + Vector2.new(0, 5)
+                        drawing.Distance.Position = screenPos - Vector2.new(0, 10)
                         drawing.Distance.Visible = true
 
                         if drawing.Distance.Color ~= Color3.new(1,1,1) and not drawing.Distance.Outline then
