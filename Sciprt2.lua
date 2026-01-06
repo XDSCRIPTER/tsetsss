@@ -3,6 +3,8 @@ local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
 
+
+
 local Options = Library.Options
 local Toggles = Library.Toggles
 
@@ -42,6 +44,8 @@ local root = char:WaitForChild("HumanoidRootPart")
 local hum = char:WaitForChild("Humanoid")
 local runs = game:GetService("RunService")
 local httpservice = game:GetService("HttpService")
+local CurrrentCamera = game.workspace.CurrrentCamera
+local worldToViewportPoint = CurrrentCamera.worldToViewportPoint
 local Players = game:GetService("Players")
 local localiservice = game:GetService("LocalizationService")
 local marketservice = game:GetService("MarketplaceService")
@@ -181,20 +185,6 @@ MainRightGroup:AddDropdown("Tareget_count_camfires", {
 
 local Esp_LeftGroup = Tabs.Esp:AddLeftGroupbox("Esp")
 local Esp_Settings_Group = Tabs.Esp:AddRightGroupbox("Esp")
-
-Esp_Settings_Group:AddSlider("EspDistance", {
-    Text = "ESP Distance",
-    Default = 1000,
-    Min = 0,
-    Max = 5000,
-    Rounding = 1,
-    Suffix = " studs",
-    Callback = function(value)
-        if esplib and esplib.update_setting then
-            esplib.update_setting("maxDistance", value)
-        end
-    end
-})
 
 Esp_LeftGroup:AddToggle("NameEsp", {
     Text = "Name Esp",
@@ -605,6 +595,66 @@ MenuGroup:AddDivider()
 MenuGroup:AddLabel("Menu bind")
 	:AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
 
+
+  
+for i,v in pairs(game:Players:GetChildren()) do
+local Text = Drawing.new("Text")
+Text.Visible = false
+Text.Text = Color3.new(1,1,1)
+Text.Transparency = 1
+
+function TextEsp()
+    RunService.RenderStepped:Connect(function()
+    if v.Character ~= nil and v ~= plr and v.Character.Humanoid ~= nil and v.Character.Humanoid.Health > 0 then
+         local Vector, OnScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+
+         if OnScreen and Toggles.NameEsp.Value then
+
+         Text.Position = Vector2.new(Vector.X, Vector.Y)
+
+         Text.Visible = true 
+         else 
+         Text.Visible = false 
+
+         end
+    end
+    end)
+
+end 
+corountine.wrap(TextEsp)()
+
+end)
+
+
+game.Players.PlayerAdded:Connect(function(v) 
+    local Text = Drawing.new("Text")
+    Text.Visible = false
+    Text.Text = Color3.new(1,1,1)
+    Text.Transparency = 1
+    
+    function TextEsp()
+        RunService.RenderStepped:Connect(function()
+        if v.Character ~= nil and v ~= plr and v.Character.Humanoid ~= nil and v.Character.Humanoid.Health > 0 then
+             local Vector, OnScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+    
+             if OnScreen and Toggles.NameEsp.Value then
+    
+             Text.Position = Vector2.new(Vector.X, Vector.Y)
+    
+             Text.Visible = true 
+             else 
+             Text.Visible = false 
+    
+             end
+        end
+        end)
+    
+    end 
+    corountine.wrap(TextEsp)()
+    
+    end)
+end)
+
 local function Loadtrack_Anim(Anim)
    if plr and plr.Character and plr.Character:FindFirstChild("Humanoid") and plr.Character:FindFirstChild("Humanoid").Health > 0 and plr.Character:FindFirstChild("Humanoid").Animator then
     track = plr.Character:FindFirstChild("Humanoid").Animator:LoadAnimation(Anim)
@@ -613,81 +663,6 @@ local function Loadtrack_Anim(Anim)
    end
 end
 
-local esplib = loadstring(game:HttpGet("https://raw.githubusercontent.com/XDSCRIPTER/EspLib/refs/heads/main/Source.lua"))()
-
--- Добавьте обработчики для обновления настроек ESP в реальном времени
-Toggles.NameEsp:OnChanged(function(value)
-    esplib.update_setting("name.enabled", value)
-end)
-
-Toggles.BoxEsp:OnChanged(function(value)
-    esplib.update_setting("box.enabled", value)
-end)
-
-Toggles.TracerEsp:OnChanged(function(value)
-    esplib.update_setting("tracer.enabled", value)
-end)
-
-Toggles.HealthBar:OnChanged(function(value)
-    esplib.update_setting("healthbar.enabled", value)
-end)
-
-Toggles.DistanceEsp:OnChanged(function(value)
-    esplib.update_setting("distance.enabled", value)
-end)
-
-
-if esplib and esplib.update_setting then
-    esplib.update_setting("maxDistance", Options.EspDistance.Value)
-end
-
--- Обработчик изменения дистанции
-Options.EspDistance:OnChanged(function(value)
-    if esplib and esplib.update_setting then
-        esplib.update_setting("maxDistance", value)
-    end
-end)
-
-
--- Если хотите добавить больше настроек, добавьте их здесь:
--- Например, для изменения цвета:
--- Options.ESPColor:OnChanged(function(value)
---     esplib.update_setting("box.fill", value)
---     esplib.update_setting("name.fill", value)
--- end)
-
--- ESP
-for _, plr in ipairs(game.Players:GetPlayers()) do
-    if plr ~= game.Players.LocalPlayer then
-        if plr.Character then
-            esplib.add_box(plr.Character)
-            esplib.add_healthbar(plr.Character)
-            esplib.add_name(plr.Character)
-            esplib.add_distance(plr.Character)
-            esplib.add_tracer(plr.Character)
-        end
-
-        plr.CharacterAdded:Connect(function(character)
-            esplib.add_box(character)
-            esplib.add_healthbar(character)
-            esplib.add_name(character)
-            esplib.add_distance(character)
-            esplib.add_tracer(character)
-        end)
-    end
-end
-
-game.Players.PlayerAdded:Connect(function(plr)
-    if plr ~= game.Players.LocalPlayer then
-        plr.CharacterAdded:Connect(function(character)
-            esplib.add_box(character)
-            esplib.add_healthbar(character)
-            esplib.add_name(character)
-            esplib.add_distance(character)
-            esplib.add_tracer(character)
-        end)
-    end
-end)
 --ESP
 
 -- Функции из вашего скрипта
