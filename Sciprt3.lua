@@ -604,9 +604,9 @@ Text.Text = Color3.new(1,1,1)
 Text.Transparency = 1
 
 function TextEsp()
-    RunService.RenderStepped:Connect(function()
+    runs.RenderStepped:Connect(function()
     if v.Character ~= nil and v ~= plr and v.Character.Humanoid ~= nil and v.Character.Humanoid.Health > 0 then
-         local Vector, OnScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+         local Vector, OnScreen = CurrrentCamera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
 
          if OnScreen and Toggles.NameEsp.Value then
 
@@ -619,7 +619,7 @@ function TextEsp()
          end
     end
     end)
-    corountine.wrap(TextEsp)()
+    coroutine.wrap(TextEsp)()
 end 
 
 
@@ -633,9 +633,9 @@ game.Players.PlayerAdded:Connect(function(v)
     Text.Transparency = 1
     
     function TextEsp()
-        RunService.RenderStepped:Connect(function()
+        runs.RenderStepped:Connect(function()
         if v.Character ~= nil and v ~= plr and v.Character.Humanoid ~= nil and v.Character.Humanoid.Health > 0 then
-             local Vector, OnScreen = camera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
+             local Vector, OnScreen = CurrrentCamera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
     
              if OnScreen and Toggles.NameEsp.Value then
     
@@ -650,7 +650,7 @@ game.Players.PlayerAdded:Connect(function(v)
         end)
     
     end 
-    corountine.wrap(TextEsp)()
+    coroutine.wrap(TextEsp)()
     
     end)
 
