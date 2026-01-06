@@ -579,6 +579,7 @@ local function createDrawingForPlayer(player)
         Box = Drawing.new("Square"),
         Tracer = Drawing.new("Line"),
         Distance = Drawing.new("Text"),
+        Health = Drawing.new("Text"),
     }
     
     drawing.Text.Visible = false
@@ -623,10 +624,12 @@ local function updateESP()
                     -- Name ESP
                     if Toggles.NameEsp.Value then
                         drawing.Text.Position = screenPos - Vector2.new(0, 20)
-                        drawing.Text.Text = player.Name
+                        drawing.Text.Text = player.Name.. humanoid.Health.. "/100"
                         drawing.Text.Visible = true
                     end
                     
+
+
                     -- Box ESP
                     if Toggles.BoxEsp.Value then
                         local height = 50
@@ -644,6 +647,8 @@ local function updateESP()
                         drawing.Tracer.Visible = true
                     end
                     
+                
+
                     -- Distance ESP
                     if Toggles.DistanceEsp.Value then
                         local distance = (rootPart.Position - root.Position).Magnitude
