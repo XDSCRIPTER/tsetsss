@@ -593,8 +593,13 @@ local function createDrawingForPlayer(player)
     drawing.Text.Text = player.Name
     drawing.Text.Color = player.Team.TeamColor.Color
     drawing.Text.Transparency = 1
-    drawing.Text.Size = 14
+    drawing.Text.Center = true
+    drawing.Text.Size = 13
+    drawing.Text.Font = 2
+    drawing.Text.Outline = true
+
     
+
     drawings[player] = drawing
     return drawing
 end
@@ -651,6 +656,11 @@ local function updateESP()
                         drawing.Distance.Text = tostring(math.floor(distance)) .. " studs"
                         drawing.Distance.Position = screenPos + Vector2.new(0, 20)
                         drawing.Distance.Visible = true
+
+                        if drawing.Distance.Color ~= Color3.new(1,1,1) then
+                            drawing.Distance.Color = Color3.new(1,1,1)
+                        end
+                        
                     end
                     
                     -- Health Bar ESP
