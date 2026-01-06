@@ -3,8 +3,6 @@ local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
 
-
-
 local Options = Library.Options
 local Toggles = Library.Toggles
 
@@ -19,9 +17,6 @@ local Window = Library:CreateWindow({
     ShowCustomCursor = true,
 })
 
-
-
-
 local Tabs = {
     Main = Window:AddTab("Main", "menu"),
     Combat = Window:AddTab("Combat", "axe"),
@@ -30,7 +25,6 @@ local Tabs = {
     Pickup = Window:AddTab("Pickup", "backpack"),
     Farming = Window:AddTab("Farming", "sprout"),
     Extra = Window:AddTab("Extra", "plus"),
-   
     ["UI Settings"] = Window:AddTab("UI Settings", "settings"),
 }
 
@@ -44,13 +38,9 @@ local root = char:WaitForChild("HumanoidRootPart")
 local hum = char:WaitForChild("Humanoid")
 local runs = game:GetService("RunService")
 local httpservice = game:GetService("HttpService")
-local CurrentCamera = game.workspace.CurrentCamera
+local CurrentCamera = workspace.CurrentCamera
 local worldToViewportPoint = CurrentCamera.worldToViewportPoint
 local Players = game:GetService("Players")
-local localiservice = game:GetService("LocalizationService")
-local marketservice = game:GetService("MarketplaceService")
-local rbxservice = game:GetService("RbxAnalyticsService")
-local placestructure
 local tspmo = game:GetService("TweenService")
 local itemslist = {
     "Adurite", "Berry", "Bloodfruit", "Bluefruit", "Coin", "Essence", "Hide", "Ice Cube", "Iron", "Jelly", "Leaves", "Log", "Steel", "Stone", "Wood", "Gold", "Raw Gold", "Crystal Chunk", "Raw Emerald", "Pink Diamond", "Raw Adurite", "Raw Iron", "Coal"
@@ -143,11 +133,11 @@ MainRightGroup:AddToggle("CampFires_Interact", {
     Default = false,
     Tooltip = "CampFires_Interact",
     Callback = function(Value)
-        updmsa()
+        -- Калбэк оставлен пустым, так как логика в отдельном потоке
     end,
 })
 
-MainRightGroup:AddDropdown("CampFire_Fule", {
+MainRightGroup:AddDropdown("CampFire_Fuel", {
     Text = "Fuel for campfire",
     Values = {"Log", "Leaves", "Coal", "Wood"},
     Default = "Leaves",
@@ -172,19 +162,15 @@ MainRightGroup:AddSlider("Range_CampFire", {
     Suffix = "studs",
 })
 
-
-MainRightGroup:AddDropdown("Tareget_count_camfires", {
+MainRightGroup:AddDropdown("Target_count_campfires", {
     Text = "Max Targets",
     Values = {"1", "2", "3", "4", "5", "6"},
     Default = "1",
     Multi = false,
 })
 
-
 --ESP TAB 
-
 local Esp_LeftGroup = Tabs.Esp:AddLeftGroupbox("Esp")
-local Esp_Settings_Group = Tabs.Esp:AddRightGroupbox("Esp")
 
 Esp_LeftGroup:AddToggle("NameEsp", {
     Text = "Name Esp",
@@ -231,9 +217,6 @@ CombatLeftGroup:AddToggle("killauratoggle", {
     Default = false,
 })
 
-
-
-
 CombatLeftGroup:AddSlider("killaurarange", {
     Text = "Range",
     Default = 5,
@@ -275,7 +258,7 @@ CombatRightGroup:AddToggle("AutoHealToggle", {
 
 CombatRightGroup:AddSlider("HealPercent", {
     Text = "Heal to",
-    Default = 0.1,
+    Default = 50,
     Min = 1,
     Max = 100,
     Rounding = 2,
@@ -465,8 +448,8 @@ FarmingLeftGroup:AddSlider("harvestrange", {
     Suffix = " studs",
 })
 
-FarmingRightGroup:AddLabel("Tween Stuff"):SetText("Tween Stuff")
-FarmingRightGroup:AddLabel("wish this ui was more like linoria :("):SetText("wish this ui was more like linoria :(")
+FarmingRightGroup:AddLabel("Tween Stuff")
+FarmingRightGroup:AddLabel("wish this ui was more like linoria :(")
 
 FarmingRightGroup:AddToggle("tweentoplantbox", {
     Text = "Tween to Plant Box",
@@ -487,7 +470,7 @@ FarmingRightGroup:AddSlider("tweenrange", {
     Suffix = " studs",
 })
 
-FarmingRightGroup:AddLabel("Plantbox Stuff"):SetText("Plantbox Stuff")
+FarmingRightGroup:AddLabel("Plantbox Stuff")
 
 FarmingRightGroup:AddButton({
     Text = "Place 16x16 Plantboxes (256)",
@@ -542,8 +525,8 @@ ExtraLeftGroup:AddButton({
     Tooltip = "inf yield chat",
 })
 
-ExtraRightGroup:AddLabel("orbit breaks sometimes"):SetText("orbit breaks sometimes")
-ExtraRightGroup:AddLabel("i dont give a shit"):SetText("i dont give a shit")
+ExtraRightGroup:AddLabel("orbit breaks sometimes")
+ExtraRightGroup:AddLabel("i dont give a shit")
 
 ExtraRightGroup:AddToggle("orbittoggle", {
     Text = "Item Orbit",
@@ -587,106 +570,197 @@ ExtraRightGroup:AddSlider("itemheight", {
 })
 
 local MenuGroup = Tabs["UI Settings"]:AddRightGroupbox("Interactions")
-
-
-
-
 MenuGroup:AddDivider()
-MenuGroup:AddLabel("Menu bind")
-	:AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
+MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
 
+-- ESP Drawing
+local drawings = {}
+local drawingCache = {}
 
-  
-for i,v in pairs(game:Players:GetChildren()) do
-local Text = Drawing.new("Text")
-Text.Visible = false
-Text.Text = Color3.new(1,1,1)
-Text.Transparency = 1
-
-function TextEsp()
-    runs.RenderStepped:Connect(function()
-    if v.Character ~= nil and v ~= plr and v.Character.Humanoid ~= nil and v.Character.Humanoid.Health > 0 then
-         local Vector, OnScreen = CurrentCamera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
-
-         if OnScreen and Toggles.NameEsp.Value then
-
-         Text.Position = Vector2.new(Vector.X, Vector.Y)
-
-         Text.Visible = true 
-         else 
-         Text.Visible = false 
-
-         end
-    end
-    end)
- 
-end 
-   coroutine.wrap(TextEsp)()
+local function createDrawingForPlayer(player)
+    local drawing = {
+        Text = Drawing.new("Text"),
+        Box = Drawing.new("Square"),
+        Tracer = Drawing.new("Line"),
+        Distance = Drawing.new("Text"),
+        HealthBar = {
+            Outline = Drawing.new("Square"),
+            Fill = Drawing.new("Square")
+        }
+    }
+    
+    drawing.Text.Visible = false
+    drawing.Text.Text = player.Name
+    drawing.Text.Color = Color3.new(1, 1, 1)
+    drawing.Text.Transparency = 1
+    drawing.Text.Size = 14
+    
+    drawings[player] = drawing
+    return drawing
 end
 
-
-
-
-game.Players.PlayerAdded:Connect(function(v) 
-    local Text = Drawing.new("Text")
-    Text.Visible = false
-    Text.Text = Color3.new(1,1,1)
-    Text.Transparency = 1
-    
-    function TextEsp()
-        runs.RenderStepped:Connect(function()
-        if v.Character ~= nil and v ~= plr and v.Character.Humanoid ~= nil and v.Character.Humanoid.Health > 0 then
-             local Vector, OnScreen = CurrentCamera:worldToViewportPoint(v.Character.HumanoidRootPart.Position)
-    
-             if OnScreen and Toggles.NameEsp.Value then
-    
-             Text.Position = Vector2.new(Vector.X, Vector.Y)
-    
-             Text.Visible = true 
-             else 
-             Text.Visible = false 
-    
-             end
+local function updateESP()
+    for player, drawing in pairs(drawings) do
+        if player and player.Character and player ~= plr then
+            local character = player.Character
+            local humanoid = character:FindFirstChild("Humanoid")
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            
+            if humanoid and humanoid.Health > 0 and rootPart then
+                local vector, onScreen = CurrentCamera:worldToViewportPoint(rootPart.Position)
+                
+                if onScreen then
+                    -- Name ESP
+                    if Toggles.NameEsp.Value then
+                        drawing.Text.Position = Vector2.new(vector.X, vector.Y)
+                        drawing.Text.Visible = true
+                    else
+                        drawing.Text.Visible = false
+                    end
+                    
+                    -- Box ESP
+                    if Toggles.BoxEsp.Value then
+                        -- Здесь должна быть логика для Box ESP
+                    else
+                        drawing.Box.Visible = false
+                    end
+                    
+                    -- Tracer ESP
+                    if Toggles.TracerEsp.Value then
+                        -- Здесь должна быть логика для Tracer ESP
+                    else
+                        drawing.Tracer.Visible = false
+                    end
+                    
+                    -- Distance ESP
+                    if Toggles.DistanceEsp.Value then
+                        local distance = (rootPart.Position - root.Position).Magnitude
+                        drawing.Distance.Text = tostring(math.floor(distance)) .. " studs"
+                        drawing.Distance.Position = Vector2.new(vector.X, vector.Y + 20)
+                        drawing.Distance.Visible = true
+                    else
+                        drawing.Distance.Visible = false
+                    end
+                    
+                    -- Health Bar ESP
+                    if Toggles.HealthBar.Value then
+                        -- Здесь должна быть логика для Health Bar ESP
+                    else
+                        drawing.HealthBar.Outline.Visible = false
+                        drawing.HealthBar.Fill.Visible = false
+                    end
+                else
+                    for _, element in pairs(drawing) do
+                        if typeof(element) == "table" then
+                            for _, subElement in pairs(element) do
+                                if typeof(subElement) == "userdata" then
+                                    subElement.Visible = false
+                                end
+                            end
+                        elseif typeof(element) == "userdata" then
+                            element.Visible = false
+                        end
+                    end
+                end
+            else
+                for _, element in pairs(drawing) do
+                    if typeof(element) == "table" then
+                        for _, subElement in pairs(element) do
+                            if typeof(subElement) == "userdata" then
+                                subElement.Visible = false
+                            end
+                        end
+                    elseif typeof(element) == "userdata" then
+                        element.Visible = false
+                    end
+                end
+            end
+        else
+            for _, element in pairs(drawing) do
+                if typeof(element) == "table" then
+                    for _, subElement in pairs(element) do
+                        if typeof(subElement) == "userdata" then
+                            subElement.Visible = false
+                        end
+                    end
+                elseif typeof(element) == "userdata" then
+                    element.Visible = false
+                end
+            end
         end
-        end)
-    
-    end 
-    coroutine.wrap(TextEsp)()
-    
-    end)
-
-
-local function Loadtrack_Anim(Anim)
-   if plr and plr.Character and plr.Character:FindFirstChild("Humanoid") and plr.Character:FindFirstChild("Humanoid").Health > 0 and plr.Character:FindFirstChild("Humanoid").Animator then
-    track = plr.Character:FindFirstChild("Humanoid").Animator:LoadAnimation(Anim)
-
-    return track
-   end
+    end
 end
 
---ESP
+-- Инициализация ESP для существующих игроков
+for _, player in pairs(Players:GetPlayers()) do
+    if player ~= plr then
+        createDrawingForPlayer(player)
+    end
+end
+
+-- Обработчик для новых игроков
+Players.PlayerAdded:Connect(function(player)
+    if player ~= plr then
+        createDrawingForPlayer(player)
+    end
+end)
+
+-- Обработчик для ушедших игроков
+Players.PlayerRemoving:Connect(function(player)
+    if drawings[player] then
+        for _, element in pairs(drawings[player]) do
+            if typeof(element) == "table" then
+                for _, subElement in pairs(element) do
+                    subElement:Remove()
+                end
+            else
+                element:Remove()
+            end
+        end
+        drawings[player] = nil
+    end
+end)
+
+-- Основной цикл ESP
+runs.RenderStepped:Connect(updateESP)
 
 -- Функции из вашего скрипта
 local wscon, hhcon
+
 local function updws()
-    if wscon then wscon:Disconnect() end
+    if wscon then 
+        wscon:Disconnect() 
+        wscon = nil
+    end
 
     if Toggles.wstoggle.Value or Toggles.jptoggle.Value then
         wscon = runs.RenderStepped:Connect(function()
-            if hum then
-                hum.WalkSpeed = Toggles.wstoggle.Value and Options.wsslider.Value or 16
-                hum.JumpPower = Toggles.jptoggle.Value and Options.jpslider.Value or 50
+            if hum and hum.Parent then
+                if Toggles.wstoggle.Value then
+                    hum.WalkSpeed = Options.wsslider.Value
+                else
+                    hum.WalkSpeed = 16
+                end
+                
+                if Toggles.jptoggle.Value then
+                    hum.JumpPower = Options.jpslider.Value
+                else
+                    hum.JumpPower = 50
+                end
             end
         end)
     end
 end
 
 local function updhh()
-    if hhcon then hhcon:Disconnect() end
+    if hhcon then 
+        hhcon:Disconnect() 
+        hhcon = nil
+    end
 
     if Toggles.hheighttoggle.Value then
         hhcon = runs.RenderStepped:Connect(function()
-            if hum then
+            if hum and hum.Parent then
                 hum.HipHeight = Options.hheightslider.Value
             end
         end)
@@ -709,16 +783,19 @@ Toggles.hheighttoggle:OnChanged(updhh)
 
 local slopecon
 local function updmsa()
-    if slopecon then slopecon:Disconnect() end
+    if slopecon then 
+        slopecon:Disconnect() 
+        slopecon = nil
+    end
 
     if Toggles.msatoggle.Value then
-        slopecon = game:GetService("RunService").RenderStepped:Connect(function()
-            if hum then
+        slopecon = runs.RenderStepped:Connect(function()
+            if hum and hum.Parent then
                 hum.MaxSlopeAngle = 90
             end
         end)
     else
-        if hum then
+        if hum and hum.Parent then
             hum.MaxSlopeAngle = 46
         end
     end
@@ -727,7 +804,7 @@ end
 Toggles.msatoggle:OnChanged(updmsa)
 
 local function getlayout(itemname)
-    local inventory = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightPanel.Inventory:FindFirstChild("List")
+    local inventory = plr.PlayerGui.MainGui.RightPanel.Inventory:FindFirstChild("List")
     if not inventory then
         return nil
     end
@@ -739,7 +816,6 @@ local function getlayout(itemname)
     return nil
 end
 
-
 local function campfire(campFireId, itemId)
     if packets.InteractStructure and packets.InteractStructure.send then
         packets.InteractStructure.send({ entityID = campFireId, itemID = itemId })
@@ -750,22 +826,33 @@ local function swingtool(tspmogngicl)
     if packets.SwingTool and packets.SwingTool.send then
         packets.SwingTool.send(tspmogngicl)
 
-        Loadtrack_Anim(game:GetService("ReplicatedStorage").Animations.Slash):Play()
+        local animation = game:GetService("ReplicatedStorage").Animations.Slash
+        if animation then
+            local track
+            if plr and plr.Character and plr.Character:FindFirstChild("Humanoid") then
+                local humanoid = plr.Character.Humanoid
+                if humanoid.Health > 0 and humanoid.Animator then
+                    track = humanoid.Animator:LoadAnimation(animation)
+                    if track then
+                        track:Play()
+                    end
+                end
+            end
+        end
     end
 end
 
 local function Eating(itemname)
-    local inventory = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightPanel.Inventory:FindFirstChild("List")
+    local inventory = plr.PlayerGui.MainGui.RightPanel.Inventory:FindFirstChild("List")
     if not inventory then return end
 
     for _, child in ipairs(inventory:GetChildren()) do
         if child:IsA("ImageLabel") and child.Name == itemname then
-           if packets.UseBagItem and packets.UseBagItem.send then
-               print(itemname,  'Selected fruit')
-               packets.UseBagItem.send(child.LayoutOrder)
-               print(child.LayoutOrder)
-           end
-       end
+            if packets.UseBagItem and packets.UseBagItem.send then
+                packets.UseBagItem.send(child.LayoutOrder)
+            end
+            break
+        end
     end
 end
 
@@ -776,22 +863,22 @@ local function pickup(entityid)
 end
 
 local function drop(itemname)
-    local inventory = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightPanel.Inventory:FindFirstChild("List")
+    local inventory = plr.PlayerGui.MainGui.RightPanel.Inventory:FindFirstChild("List")
     if not inventory then return end
 
     for _, child in ipairs(inventory:GetChildren()) do
         if child:IsA("ImageLabel") and child.Name == itemname then
             if packets and packets.DropBagItem and packets.DropBagItem.send then
                 packets.DropBagItem.send(child.LayoutOrder)
-                print(child.LayoutOrder)
             end
+            break
         end
     end
 end
 
 local selecteditems = {}
 Options.itemdropdown:OnChanged(function(Value)
-    selecteditems = {} 
+    selecteditems = {}
     for item, State in pairs(Value) do
         if State then
             table.insert(selecteditems, item)
@@ -807,12 +894,17 @@ task.spawn(function()
             continue
         end
 
+        if not root or not root.Parent then
+            task.wait(0.1)
+            continue
+        end
+
         local range = tonumber(Options.killaurarange.Value) or 20
         local targetCount = tonumber(Options.katargetcountdropdown.Value) or 1
         local cooldown = tonumber(Options.kaswingcooldownslider.Value) or 0.1
         local targets = {}
 
-        for _, player in pairs(game.Players:GetPlayers()) do
+        for _, player in pairs(Players:GetPlayers()) do
             if player ~= plr then
                 local playerfolder = workspace.Players:FindFirstChild(player.Name)
                 if playerfolder then
@@ -846,25 +938,26 @@ task.spawn(function()
     end
 end)
 
-
-local function findNearestPlayerSimple(plr)
-    local character = plr.Character
-    if not character then return nil end
+local function findNearestPlayerSimple()
+    if not plr or not plr.Character then 
+        return nil 
+    end
     
+    local character = plr.Character
     local rootPart = character:FindFirstChild("HumanoidRootPart")
-    if not rootPart then return nil end
+    if not rootPart then 
+        return nil 
+    end
     
     local nearestPlayer = nil
     local shortestDistance = tonumber(Options.VoodooAimbotRangeDetect.Value) or 20
     
-    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+    for _, otherPlayer in pairs(Players:GetPlayers()) do
         if otherPlayer ~= plr then
             local otherChar = otherPlayer.Character
             if otherChar then
                 local otherRoot = otherChar:FindFirstChild("HumanoidRootPart")
                 if otherRoot then
-                    
-
                     local distance = (otherRoot.Position - rootPart.Position).Magnitude
                     
                     if distance < shortestDistance then
@@ -879,15 +972,11 @@ local function findNearestPlayerSimple(plr)
     return nearestPlayer
 end
 
-
-
-
 task.spawn(function()
-    local lastCharacter = nil  -- Храним последний подсвеченный персонаж
+    local lastCharacter = nil
     
     while true do
         if not Toggles.VoodooShowTarget.Value then
-            -- Если выключено, удаляем подсветку с последнего персонажа
             if lastCharacter then
                 local oldHighlight = lastCharacter:FindFirstChild("Highlight")
                 if oldHighlight then
@@ -900,10 +989,9 @@ task.spawn(function()
             continue
         end
 
-        local target = findNearestPlayerSimple(plr)
+        local target = findNearestPlayerSimple()
         local char = target and target.Character or nil
 
-        -- Удаляем подсветку с предыдущего персонажа, если цель изменилась
         if lastCharacter and lastCharacter ~= char then
             local oldHighlight = lastCharacter:FindFirstChild("Highlight")
             if oldHighlight then
@@ -918,30 +1006,12 @@ task.spawn(function()
             high.FillTransparency = 0.2
         end
 
-        -- Обновляем запись о последнем подсвеченном персонаже
         lastCharacter = char
-        
-        task.wait(0.1)  -- Не забудьте добавить задержку, чтобы не грузить процессор
+        task.wait(0.1)
     end
 end)
 
-local oldsend; oldsend = hookfunction(packets.VoodooSpell.send, function(...)
-if Toggles.VoodoAimBot.Value then
-   args = ...
-   
-     
-    print("argsoldmethod", args)
-    
-
-    return oldsend(findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").Position)
-end
-end);
-
-
-
-
 -- Campfire Aura
-
 task.spawn(function()
     while true do
         if not Toggles.CampFires_Interact.Value then
@@ -949,8 +1019,13 @@ task.spawn(function()
             continue
         end
 
+        if not root or not root.Parent then
+            task.wait(0.1)
+            continue
+        end
+
         local range = tonumber(Options.Range_CampFire.Value) or 20
-        local targetCount = tonumber(Options.Tareget_count_camfires.Value) or 1
+        local targetCount = tonumber(Options.Target_count_campfires.Value) or 1
         local cooldown = tonumber(Options.Deploy_Time_CampFires.Value) or 0.1
         local targets = {}
         local AllDeployables = {}
@@ -982,11 +1057,9 @@ task.spawn(function()
                 table.insert(selectedTargets, targets[i].eid)
             end
 
-            -- Получаем ID выбранного топлива
-            local itemName = Options.CampFire_Fule.Value
-            local itemId = Item_Ids[itemName] -- Предполагаем, что в Item_Ids есть такие ключи
+            local itemName = Options.CampFire_Fuel.Value
+            local itemId = Item_Ids[itemName]
 
-            -- Для каждого выбранного campfire отправляем взаимодействие
             for _, campFireId in ipairs(selectedTargets) do
                 campfire(campFireId, itemId)
             end
@@ -995,12 +1068,16 @@ task.spawn(function()
         task.wait(cooldown)
     end
 end)
-               
 
 -- Resource Aura
 task.spawn(function()
     while true do
         if not Toggles.resourceauratoggle.Value then
+            task.wait(0.1)
+            continue
+        end
+
+        if not root or not root.Parent then
             task.wait(0.1)
             continue
         end
@@ -1053,26 +1130,40 @@ end)
 -- Auto Heal
 task.spawn(function()
     while true do 
-       if not Toggles.AutoHealToggle.Value then
-           task.wait(0.1)
-           continue
-       end
-     
-     print(Options.HealPercent.Value)
-     
-     local humanoid = plr.Character:FindFirstChild("Humanoid")
-     if humanoid and humanoid.Health > 0 and humanoid.Health <= Options.HealPercent.Value then
-        Eating(Options.HealFruitDropDown.Value)
-     end
- 
-     task.wait(Options.HealColdown.Value)
+        if not Toggles.AutoHealToggle.Value then
+            task.wait(0.1)
+            continue
+        end
+        
+        if not plr or not plr.Character then
+            task.wait(0.1)
+            continue
+        end
+        
+        local humanoid = plr.Character:FindFirstChild("Humanoid")
+        if humanoid and humanoid.Health > 0 then
+            local maxHealth = humanoid.MaxHealth
+            local currentHealth = humanoid.Health
+            local healPercent = Options.HealPercent.Value
+            
+            if currentHealth <= (maxHealth * (healPercent / 100)) then
+                Eating(Options.HealFruitDropDown.Value)
+            end
+        end
+    
+        task.wait(Options.HealColdown.Value)
     end
- end)
+end)
 
 -- Critter Aura
 task.spawn(function()
     while true do
         if not Toggles.critterauratoggle.Value then
+            task.wait(0.1)
+            continue
+        end
+
+        if not root or not root.Parent then
             task.wait(0.1)
             continue
         end
@@ -1116,11 +1207,16 @@ end)
 -- Auto Pickup
 task.spawn(function()
     while true do
+        if not root or not root.Parent then
+            task.wait(0.1)
+            continue
+        end
+        
         local range = tonumber(Options.pickuprange.Value) or 35
 
         if Toggles.autopickuptoggle.Value then
             for _, item in ipairs(workspace.Items:GetChildren()) do
-                if item:IsA("BasePart") or item:IsA("MeshPart") then
+                if (item:IsA("BasePart") or item:IsA("MeshPart")) and item.Parent then
                     local selecteditem = item.Name
                     local entityid = item:GetAttribute("EntityID")
 
@@ -1136,9 +1232,9 @@ task.spawn(function()
 
         if Toggles.chestpickuptoggle.Value then
             for _, chest in ipairs(workspace.Deployables:GetChildren()) do
-                if chest:IsA("Model") and chest:FindFirstChild("Contents") then
+                if chest:IsA("Model") and chest.Parent and chest:FindFirstChild("Contents") then
                     for _, item in ipairs(chest.Contents:GetChildren()) do
-                        if item:IsA("BasePart") or item:IsA("MeshPart") then
+                        if (item:IsA("BasePart") or item:IsA("MeshPart")) and item.Parent then
                             local selecteditem = item.Name
                             local entityid = item:GetAttribute("EntityID")
 
@@ -1154,30 +1250,33 @@ task.spawn(function()
             end
         end
 
-        task.wait(0.01)
+        task.wait(0.1)
     end
 end)
 
 -- Auto Drop
 local debounce = 0
-local cd = 0
-runs.Heartbeat:Connect(function()
-    if Toggles.droptoggle.Value then
-        if tick() - debounce >= cd then
-            local selectedItem = Options.dropdropdown.Value
-            drop(selectedItem)
-            debounce = tick()
-        end
-    end
-end)
+local cd = 0.1
 
-runs.Heartbeat:Connect(function()
-    if Toggles.droptogglemanual.Value then
-        if tick() - debounce >= cd then
-            local itemname = Options.droptextbox.Value
-            drop(itemname)
-            debounce = tick()
+task.spawn(function()
+    while true do
+        if Toggles.droptoggle.Value then
+            if tick() - debounce >= cd then
+                local selectedItem = Options.dropdropdown.Value
+                drop(selectedItem)
+                debounce = tick()
+            end
         end
+        
+        if Toggles.droptogglemanual.Value then
+            if tick() - debounce >= cd then
+                local itemname = Options.droptextbox.Value
+                drop(itemname)
+                debounce = tick()
+            end
+        end
+        
+        task.wait(0.1)
     end
 end)
 
@@ -1249,18 +1348,31 @@ end
 
 local tweening = nil
 local function tween(target)
-    if tweening then tweening:Cancel() end
+    if tweening then 
+        tweening:Cancel() 
+        tweening = nil
+    end
+    
+    if not root or not root.Parent then
+        return
+    end
+    
     local distance = (root.Position - target.Position).Magnitude
     local duration = distance / 21
     local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear)
-    local tween = tspmo:Create(root, tweenInfo, { CFrame = target })
-    tween:Play()
+    local tweenObj = tspmo:Create(root, tweenInfo, { CFrame = target })
+    tweenObj:Play()
     
-    tweening = tween
+    tweening = tweenObj
 end
 
 local function tweenplantbox(range)
     while Toggles.tweentoplantbox.Value do
+        if not root or not root.Parent then
+            task.wait(0.1)
+            continue
+        end
+        
         local plantboxes = getpbs(range)
         table.sort(plantboxes, function(a, b) return a.dist < b.dist end)
 
@@ -1278,6 +1390,11 @@ end
 
 local function tweenpbs(range, fruitname)
     while Toggles.tweentobush.Value do
+        if not root or not root.Parent then
+            task.wait(0.1)
+            continue
+        end
+        
         local bushes = getbushes(range, fruitname)
         table.sort(bushes, function(a, b) return a.dist < b.dist end)
 
@@ -1303,8 +1420,6 @@ local function tweenpbs(range, fruitname)
         task.wait(0.1)
     end
 end
-
-
 
 -- Auto Plant
 task.spawn(function()
@@ -1353,34 +1468,36 @@ end)
 -- Tween to Plant Box
 task.spawn(function()
     while true do
-        if not Toggles.tweentoplantbox.Value then
-            task.wait(0.1)
-            continue
+        if Toggles.tweentoplantbox.Value then
+            local range = tonumber(Options.tweenrange.Value) or 250
+            tweenplantbox(range)
         end
-        local range = tonumber(Options.tweenrange.Value) or 250
-        tweenplantbox(range)
+        task.wait(0.1)
     end
 end)
 
 -- Tween to Bush
 task.spawn(function()
     while true do
-        if not Toggles.tweentobush.Value then
-            task.wait(0.1)
-            continue
+        if Toggles.tweentobush.Value then
+            local range = tonumber(Options.tweenrange.Value) or 20
+            local selectedfruit = Options.fruitdropdown.Value
+            tweenpbs(range, selectedfruit)
         end
-        local range = tonumber(Options.tweenrange.Value) or 20
-        local selectedfruit = Options.fruitdropdown.Value
-        tweenpbs(range, selectedfruit)
+        task.wait(0.1)
     end
 end)
 
 -- Place Structure
 placestructure = function(gridsize)
-    if not plr or not plr.Character then return end
+    if not plr or not plr.Character then 
+        return 
+    end
 
     local torso = plr.Character:FindFirstChild("HumanoidRootPart")
-    if not torso then return end
+    if not torso then 
+        return 
+    end
 
     local startpos = torso.Position - Vector3.new(0, 3, 0)
     local spacing = 6.04
@@ -1392,10 +1509,10 @@ placestructure = function(gridsize)
 
             if packets.PlaceStructure and packets.PlaceStructure.send then
                 packets.PlaceStructure.send{
-                    ["buildingName"] = "Plant Box",
-                    ["yrot"] = 45,
-                    ["vec"] = position,
-                    ["isMobile"] = false
+                    buildingName = "Plant Box",
+                    yrot = 45,
+                    vec = position,
+                    isMobile = false
                 }
             end
         end
@@ -1403,14 +1520,24 @@ placestructure = function(gridsize)
 end
 
 -- Item Orbit
-local orbiton, range, orbitradius, orbitspeed, itemheight = false, 20, 10, 5, 3
-local attacheditems, itemangles, lastpositions = {}, {}, {}
+local orbiton = false
+local orbitrange = 20
+local orbitradius = 10
+local orbitspeed = 5
+local itemheight = 3
+local attacheditems = {}
+local itemangles = {}
+local lastpositions = {}
 local itemsfolder = workspace:WaitForChild("Items")
 
 Toggles.orbittoggle:OnChanged(function(value)
     orbiton = value
     if not orbiton then
-        for _, bp in pairs(attacheditems) do bp:Destroy() end
+        for _, bp in pairs(attacheditems) do 
+            if bp and bp.Parent then
+                bp:Destroy() 
+            end
+        end
         table.clear(attacheditems)
         table.clear(itemangles)
         table.clear(lastpositions)
@@ -1418,7 +1545,7 @@ Toggles.orbittoggle:OnChanged(function(value)
         task.spawn(function()
             while orbiton do
                 for item, bp in pairs(attacheditems) do
-                    if item then
+                    if item and item.Parent then
                         local currentpos = item.Position
                         local lastpos = lastpositions[item]
                         
@@ -1437,17 +1564,30 @@ Toggles.orbittoggle:OnChanged(function(value)
     end
 end)
 
-Options.orbitrange:OnChanged(function(value) range = value end)
-Options.orbitradius:OnChanged(function(value) orbitradius = value end)
-Options.orbitspeed:OnChanged(function(value) orbitspeed = value end)
-Options.itemheight:OnChanged(function(value) itemheight = value end)
+Options.orbitrange:OnChanged(function(value) 
+    orbitrange = value 
+end)
+
+Options.orbitradius:OnChanged(function(value) 
+    orbitradius = value 
+end)
+
+Options.orbitspeed:OnChanged(function(value) 
+    orbitspeed = value 
+end)
+
+Options.itemheight:OnChanged(function(value) 
+    itemheight = value 
+end)
 
 runs.RenderStepped:Connect(function()
-    if not orbiton then return end
+    if not orbiton or not root or not root.Parent then 
+        return 
+    end
     local time = tick() * orbitspeed
     for item, bp in pairs(attacheditems) do
-        if item then
-            local angle = itemangles[item] + time
+        if item and item.Parent and bp and bp.Parent then
+            local angle = (itemangles[item] or 0) + time
             bp.Position = root.Position + Vector3.new(math.cos(angle) * orbitradius, itemheight, math.sin(angle) * orbitradius)
         end
     end
@@ -1455,18 +1595,24 @@ end)
 
 task.spawn(function()
     while true do
-        if orbiton then
-            local children, index = itemsfolder:GetChildren(), 0
+        if orbiton and root and root.Parent then
+            local children = itemsfolder:GetChildren()
             local anglestep = (math.pi * 2) / math.max(#children, 1)
+            local index = 0
 
             for _, item in pairs(children) do
-                local primary = item:IsA("BasePart") and item or item:IsA("Model") and item.PrimaryPart
-                if primary and (primary.Position - root.Position).Magnitude <= range then
+                local primary = item:IsA("BasePart") and item or (item:IsA("Model") and item.PrimaryPart)
+                if primary and primary.Parent and (primary.Position - root.Position).Magnitude <= orbitrange then
                     if not attacheditems[primary] then
                         local bp = Instance.new("BodyPosition")
-                        bp.MaxForce, bp.D, bp.P, bp.Parent = Vector3.new(math.huge, math.huge, math.huge), 1500, 25000, primary
-                        attacheditems[primary], itemangles[primary], lastpositions[primary] = bp, index * anglestep, primary.Position
-                        index += 1
+                        bp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                        bp.D = 1500
+                        bp.P = 25000
+                        bp.Parent = primary
+                        attacheditems[primary] = bp
+                        itemangles[primary] = index * anglestep
+                        lastpositions[primary] = primary.Position
+                        index = index + 1
                     end
                 end
             end
@@ -1474,8 +1620,6 @@ task.spawn(function()
         task.wait()
     end
 end)
-
-
 
 -- Настройка ThemeManager и SaveManager
 ThemeManager:SetLibrary(Library)
@@ -1493,4 +1637,3 @@ Library:Notify("Private Weed Hub loaded successfully!", 5)
 
 -- Выбор первой вкладки
 Library:SelectTab(1)
-
