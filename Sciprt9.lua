@@ -598,7 +598,9 @@ local function createDrawingForPlayer(player)
     drawing.Text.Font = 2
     drawing.Text.Outline = true
 
-    
+    drawing.Tracer.Color = Color3.new(1,1,1)
+    drawing.Tracer.Outline = true
+    drawing.Thickness = 1
 
     drawings[player] = drawing
     return drawing
@@ -657,10 +659,11 @@ local function updateESP()
                         drawing.Distance.Position = screenPos + Vector2.new(0, 20)
                         drawing.Distance.Visible = true
 
-                        if drawing.Distance.Color ~= Color3.new(1,1,1) then
+                        if drawing.Distance.Color ~= Color3.new(1,1,1) and not drawing.Distance.Outline then
                             drawing.Distance.Color = Color3.new(1,1,1)
+                            drawing.Distance.Outline = true
                         end
-                        
+
                     end
                     
                     -- Health Bar ESP
