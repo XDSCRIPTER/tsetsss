@@ -591,7 +591,7 @@ local function createDrawingForPlayer(player)
     
     drawing.Text.Visible = false
     drawing.Text.Text = player.Name
-    drawing.Text.Color = player.Team.TeamColor
+    drawing.Text.BrickColor = player.Team.TeamColor
     drawing.Text.Transparency = 1
     drawing.Text.Size = 14
     
