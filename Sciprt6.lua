@@ -240,6 +240,7 @@ CombatLeftGroup:AddSlider("HitBoxSize", {
                 if player ~= plr then
                     if player.Character and player.Character:FindFirstChild("Humanoid").Health > 0 then
                         player.Character:FindFirstChild("HumanoidRootPart").Size = Vector3.new(Value,Value,Value)
+                        player.Character:FindFirstChild("HumanoidRootPart").Transparency = 0.8
                     end
                 end
             end
@@ -711,6 +712,7 @@ Players.PlayerAdded:Connect(function(player)
     if player ~= plr then
 
         if player.Character and player.Character:FindFirstChild("Humanoid").Health > 0 then
+            player.Character:FindFirstChild("HumanoidRootPart").Transparency = 0.8
             player.Character:FindFirstChild("HumanoidRootPart").Size = Vector3.new(Options.HitBoxSize.Value, Options.HitBoxSize.Value,Options.HitBoxSize.Value)
         end
 
