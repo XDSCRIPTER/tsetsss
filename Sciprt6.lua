@@ -227,7 +227,7 @@ CombatLeftGroup:AddSlider("killaurarange", {
 
 
 CombatLeftGroup:AddSlider("HitBoxSize", {
-    Text = "Range",
+    Text = "HitBox Size",
     Default = 2,
     Min = 1,
     Max = 5,
@@ -235,7 +235,7 @@ CombatLeftGroup:AddSlider("HitBoxSize", {
     Suffix = "studs",
 
     Callback = function(Value)
-        if Toggles.wstoggle.Value then
+        
             for _, player in pairs(Players:GetPlayers()) do
                 if player ~= plr then
                     if player.Character and player.Character:FindFirstChild("Humanoid").Health > 0 then
@@ -244,7 +244,7 @@ CombatLeftGroup:AddSlider("HitBoxSize", {
                     end
                 end
             end
-        end
+      
     end,
 })
 
@@ -1008,7 +1008,7 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
 
      if char and findNearestPlayerSimple() and findNearestPlayerSimple().Character then
     
-        tspmo:Create(char:FindFirstChild("HumanoidRootPart"), TweenInfo.new(1), {CFrame.new(findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.X,findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Y, findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Z + 2)}):Play()
+        tspmo:Create(char:FindFirstChild("HumanoidRootPart"), TweenInfo.new(1), {CFrame = findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame + Vector3.new(0,0,2) ):Play()
 
      end
 
