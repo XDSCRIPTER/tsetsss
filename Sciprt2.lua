@@ -974,7 +974,12 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
 	-- Occurs when the keybind is clicked, Value is `true`/`false`
 	Callback = function(Value)
 		if packets.PlaceStructure.send and findNearestPlayerSimple().Character then
-           packets.PlaceStructure.send{"Big Ol' Hut", findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame}
+           packets.PlaceStructure.send{
+
+            buildingName = "Big Ol' Hut", 
+            cframe =  findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame,
+
+           }
         end
 	end,
 
