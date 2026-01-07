@@ -41,6 +41,7 @@ local httpservice = game:GetService("HttpService")
 local CurrentCamera = workspace.CurrentCamera
 local worldToViewportPoint = CurrentCamera.worldToViewportPoint
 local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
 local tspmo = game:GetService("TweenService")
 local itemslist = {
     "Adurite", "Berry", "Bloodfruit", "Bluefruit", "Coin", "Essence", "Hide", "Ice Cube", "Iron", "Jelly", "Leaves", "Log", "Steel", "Stone", "Wood", "Gold", "Raw Gold", "Crystal Chunk", "Raw Emerald", "Pink Diamond", "Raw Adurite", "Raw Iron", "Coal"
@@ -126,6 +127,24 @@ MainLeftGroup:AddToggle("msatoggle", {
     Callback = function(Value)
         updmsa()
     end,
+})
+
+local MyButton = MainLeftGroup:AddButton({
+    if game.PlaceId ~= 11879754496 then
+	Text = "Teleport to void",
+    else
+        Text = "Teleport to NormalMap",
+    end
+	Func = function()
+        if game.PlaceId ~= 11879754496 then
+		TeleportService:Teleport(11879754496, plr)
+        else
+        TeleportService:Teleport(11729688377, plr)
+        end
+	end,
+
+	Tooltip = "This button teleport to place",
+	
 })
 
 MainRightGroup:AddToggle("CampFires_Interact", {
@@ -987,6 +1006,18 @@ local function findNearestPlayerSimple()
     
     return nearestPlayer
 end
+
+local oldsend; oldsend = hookfunction(packets.VoodooSpell.send, function(...)
+    if Toggles.VoodoAimBot.Value then
+       args = ...
+       
+         
+        print("argsoldmethod", args)
+        
+    
+        return oldsend(findNearestPlayerSimple(plr).Character:FindFirstChild("HumanoidRootPart").Position)
+    end
+end);
 
 
 StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybind", {
