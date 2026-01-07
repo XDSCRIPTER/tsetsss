@@ -1008,7 +1008,7 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
 
      if char and findNearestPlayerSimple() and findNearestPlayerSimple().Character then
     
-        tspmo:Create(char:FindFirstChild("HumanoidRootPart"), TweenInfo.new(1), {CFrame = findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame}):Play()
+        tspmo:Create(char:FindFirstChild("HumanoidRootPart"), TweenInfo.new(0.8), {CFrame = findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame + Vector3.new(0,0,2)}):Play()
 
      end
 
