@@ -964,7 +964,8 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
 
 	Default = "x", -- String as the name of the keybind (MB1, MB2 for mouse buttons)
 	SyncToggleState = false,
-
+    
+    Mode = "Toggle"
 	-- You can define custom Modes but I have never had a use for it.
 
 	Text = "Auto lockpick safes", -- Text to display in the keybind menu
@@ -972,8 +973,8 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
 
 	-- Occurs when the keybind is clicked, Value is `true`/`false`
 	Callback = function(Value)
-		if packets.PlaceStructure.send then
-           packets.PlaceStructure.send({"Big Ol' Hut", findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame})
+		if packets.PlaceStructure.send and findNearestPlayerSimple().Character then
+           packets.PlaceStructure.send{"Big Ol' Hut", findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame}
         end
 	end,
 
