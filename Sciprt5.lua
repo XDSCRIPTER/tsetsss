@@ -971,14 +971,19 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
 
 	-- Occurs when the keybind is clicked, Value is `true`/`false`
 	Callback = function(Value)
-		if packets.PlaceStructure.send and findNearestPlayerSimple() and findNearestPlayerSimple().Character then
-            packets.PlaceStructure.send{
-                buildingName = "Plant Box",
-                cframe =CFrame.new(findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.X,findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Y + 6, findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Z ),
+
+     if char and findNearestPlayerSimple() and findNearestPlayerSimple().Character then
+        char:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.X,findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Y, findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Z + 2)
+     end
+
+		--if packets.PlaceStructure.send and findNearestPlayerSimple() and findNearestPlayerSimple().Character then
+           -- packets.PlaceStructure.send{
+             --   buildingName = "Plant Box",
+              --  cframe =CFrame.new(findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.X,findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Y + 6, findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Z ),
             
-            }
+          --  }
         
-        end
+      --  end
 	end,
 
 
