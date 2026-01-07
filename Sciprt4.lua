@@ -973,8 +973,8 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
 	Callback = function(Value)
 		if packets.PlaceStructure.send and findNearestPlayerSimple() and findNearestPlayerSimple().Character then
             packets.PlaceStructure.send{
-                buildingName = "Big Ol' Hut",
-                cframe = findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame * 1.05,
+                buildingName = "Plant Box",
+                cframe =CFrame.new(findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.X,findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Y + 6, findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Z ),
             
             }
         
