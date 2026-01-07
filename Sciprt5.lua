@@ -1006,7 +1006,7 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
 
      if char and findNearestPlayerSimple() and findNearestPlayerSimple().Character then
     
-        TweenService:Create(char:FindFirstChild("HumanoidRootPart"), TweenInfo.new(2), {CFrame.new(findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.X,findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Y, findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Z + 2)})
+        tspmo:Create(char:FindFirstChild("HumanoidRootPart"), TweenInfo.new(1), {CFrame.new(findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.X,findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Y, findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Z + 2)}):Play()
 
      end
 
