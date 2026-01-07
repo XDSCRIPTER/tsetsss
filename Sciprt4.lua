@@ -131,11 +131,20 @@ MainLeftGroup:AddToggle("msatoggle", {
 
 local MyButton2 = MainLeftGroup:AddButton({
 	Text = "Sub button",
+
 	Func = function()
-		print("You clicked a sub button!")
+		if game.PlaceId == 11879754496 then
+            Text = "Teleport to normal map",
+            TeleportService:Teleport(11729688377, plr)
+        else
+            Text = "Teleport to the void",
+            TeleportService:Teleport(11879754496, plr)
+        end
 	end,
+
 	DoubleClick = true, -- You will have to click this button twice to trigger the callback
 	Tooltip = "This is the sub button",
+
 	DisabledTooltip = "I am disabled!",
 })
 
