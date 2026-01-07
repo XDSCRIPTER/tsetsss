@@ -129,12 +129,16 @@ MainLeftGroup:AddToggle("msatoggle", {
     end,
 })
 
-local MyButton = MainLeftGroup:AddButton({
+MainLeftGroup:AddButton({
+     
+    Text = "nil" 
+
     if game.PlaceId ~= 11879754496 then
 	Text = "Teleport to void",
     else
-        Text = "Teleport to NormalMap",
+    Text = "Teleport to NormalMap",
     end
+
 	Func = function()
         if game.PlaceId ~= 11879754496 then
 		TeleportService:Teleport(11879754496, plr)
@@ -143,6 +147,8 @@ local MyButton = MainLeftGroup:AddButton({
         end
 	end,
 
+    DoubleClick = false,
+	DisabledTooltip = "I am disabled!",
 	Tooltip = "This button teleport to place",
 	
 })
