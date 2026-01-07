@@ -129,7 +129,23 @@ MainLeftGroup:AddToggle("msatoggle", {
     end,
 })
 
+MainLeftGroup:AddButton({
+     
+    Text = "nil" 
 
+	Func = function()
+        if game.PlaceId ~= 11879754496 then
+		TeleportService:Teleport(11879754496, plr)
+        else
+        TeleportService:Teleport(11729688377, plr)
+        end
+	end,
+
+    DoubleClick = false,
+	DisabledTooltip = "I am disabled!",
+	Tooltip = "This button teleport to place",
+	
+})
 
 MainRightGroup:AddToggle("CampFires_Interact", {
     Text = "Interact Campfire",
