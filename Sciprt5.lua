@@ -225,6 +225,28 @@ CombatLeftGroup:AddSlider("killaurarange", {
     Suffix = " studs",
 })
 
+
+CombatLeftGroup:AddSlider("HitBoxSize", {
+    Text = "Range",
+    Default = 2,
+    Min = 1,
+    Max = 5,
+    Rounding = 1,
+    Suffix = "studs",
+
+    Callback = function(Value)
+        if Toggles.wstoggle.Value then
+            for _, player in pairs(Players:GetPlayers()) do
+                if player ~= plr then
+                    if player.Character and player.Character:FindFirstChild("Humanoid").Health > 0 then
+                        player.Character:FindFirstChild("HumanoidRootPart").Size = Vector3.new(Value,Value,Value)
+                    end
+                end
+            end
+        end
+    end,
+})
+
 CombatLeftGroupVoodo:AddSlider("VoodooAimbotRangeDetect", {
     Text = "Voodoo Aimbot Range Detect",
     Default = 30,
@@ -675,6 +697,8 @@ local function updateESP()
     end
 end
 
+
+
 -- Инициализация ESP для существующих игроков
 for _, player in pairs(Players:GetPlayers()) do
     if player ~= plr then
@@ -685,9 +709,17 @@ end
 -- Обработчик для новых игроков
 Players.PlayerAdded:Connect(function(player)
     if player ~= plr then
+
+        if player.Character and player.Character:FindFirstChild("Humanoid").Health > 0 then
+            player.Character:FindFirstChild("HumanoidRootPart").Size = Vector3.new(Options.HitBoxSize.Value, Options.HitBoxSize.Value,Options.HitBoxSize.Value)
+        end
+
+
         createDrawingForPlayer(player)
     end
 end)
+
+
 
 -- Обработчик для ушедших игроков
 Players.PlayerRemoving:Connect(function(player)
@@ -973,7 +1005,9 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
 	Callback = function(Value)
 
      if char and findNearestPlayerSimple() and findNearestPlayerSimple().Character then
-        char:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.X,findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Y, findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Z + 2)
+    
+        TweenService:Create(char:FindFirstChild("HumanoidRootPart"), TweenInfo.new(2), {CFrame.new(findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.X,findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Y, findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame.Z + 2)})
+
      end
 
 		--if packets.PlaceStructure.send and findNearestPlayerSimple() and findNearestPlayerSimple().Character then
@@ -1221,6 +1255,8 @@ task.spawn(function()
         task.wait(cooldown)
     end
 end)
+
+
 
 -- Auto Pickup
 task.spawn(function()
