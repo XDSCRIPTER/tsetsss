@@ -197,6 +197,9 @@ Esp_LeftGroup:AddToggle("DistanceEsp", {
 local CombatLeftGroup = Tabs.Combat:AddLeftGroupbox("Kill Aura")
 local CombatRightGroup = Tabs.Combat:AddRightGroupbox("Auto Heal")
 local CombatLeftGroupVoodo = Tabs.Combat:AddLeftGroupbox("Voodo")
+local StructureRightGroup = Tabs.Combat:AddRightGroupbox("Structures")
+
+
 
 CombatLeftGroupVoodo:AddToggle("VoodoAimBot", {
     Text = "VoodoAimBot",
@@ -567,7 +570,7 @@ ExtraRightGroup:AddSlider("itemheight", {
 
 local MenuGroup = Tabs["UI Settings"]:AddRightGroupbox("Interactions")
 MenuGroup:AddDivider()
-MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
+MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = false, Text = "Menu keybind" })
 
 -- ESP Drawing
 local drawings = {}
@@ -950,6 +953,33 @@ local function findNearestPlayerSimple()
     
     return nearestPlayer
 end
+
+
+StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybind", {
+	-- SyncToggleState only works with toggles.
+	-- It allows you to make a keybind which has its state synced with its parent toggle
+
+	-- Example: Keybind which you use to toggle flyhack, etc.
+	-- Changing the toggle disables the keybind state and toggling the keybind switches the toggle state
+
+	Default = "x", -- String as the name of the keybind (MB1, MB2 for mouse buttons)
+	SyncToggleState = false,
+
+	-- You can define custom Modes but I have never had a use for it.
+
+	Text = "Auto lockpick safes", -- Text to display in the keybind menu
+	NoUI = false, -- Set to true if you want to hide from the Keybind menu,
+
+	-- Occurs when the keybind is clicked, Value is `true`/`false`
+	Callback = function(Value)
+		if packets.PlaceStructure.send then
+           packets.PlaceStructure.send({"Big Ol' Hut", findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame})
+        end
+	end,
+
+
+
+})
 
 task.spawn(function()
     local lastCharacter = nil
