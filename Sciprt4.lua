@@ -975,8 +975,7 @@ StructureRightGroup:AddLabel("Structure keybind"):AddKeyPicker("Structure_keybin
             packets.PlaceStructure.send{
                 buildingName = "Big Ol' Hut",
                 cframe = findNearestPlayerSimple().Character:FindFirstChild("HumanoidRootPart").CFrame,
-                yrot = 90,
-                isMobile = false
+            
             }
         
         end
